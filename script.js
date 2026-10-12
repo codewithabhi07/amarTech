@@ -44,7 +44,12 @@ let shokakulItems = [...defaultData.shokakulList];
 let isMarathiNumerals = true;
 let currentGarlandType = "marigold";
 let currentFeatherType = "none";
-let showStudioBranding = false;
+let showStudioBranding = true;
+let showFirmBranding = true;
+let firmText = "अमर कॉम्प्युटर (९३७०११०२१२)";
+let firmOrientation = "vertical";
+let firmX = 972;
+let firmY = 320;
 
 // Photo Adjustments State
 let photoScale = 100;
@@ -61,7 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCard();
   setupContentEditableSync();
   setupPhotoInteractiveDrag();
+  setupFirmInteractiveDrag();
   applyPhotoTransform();
+  applyFirmTransform();
   toggleDiyaGlow(true);
   toggleCard3DShadow(true);
   autoScaleCard();
@@ -399,30 +406,196 @@ function applyCalligraphyTitle(val) {
   debounceAutoSave();
 }
 
-// Studio Branding Watermark
-function toggleStudioBranding(show) {
-  showStudioBranding = show;
-  const brandingEl = document.getElementById("cardStudioBranding");
-  const groupEl = document.getElementById("group_studio_text");
-  const checkEl = document.getElementById("in_show_branding");
+// ==========================================================================
+// MOVABLE FIRM BRANDING CREDIT (अमर कॉम्प्युटर - उभा/आडवा/ड्रॅगेबल)
+// ==========================================================================
+const firmPresets = {
+  right_edge: { x: 972, y: 320, orientation: "vertical" },
+  left_edge: { x: 28, y: 320, orientation: "vertical" },
+  bottom_right: { x: 860, y: 620, orientation: "horizontal" },
+  bottom_left: { x: 140, y: 620, orientation: "horizontal" },
+  bottom_center: { x: 500, y: 622, orientation: "horizontal" },
+  top_right: { x: 870, y: 22, orientation: "horizontal" }
+};
 
-  if (checkEl && checkEl.checked !== show) checkEl.checked = show;
-  if (brandingEl) {
-    if (show) brandingEl.classList.remove("hidden");
-    else brandingEl.classList.add("hidden");
+function applyFirmTransform() {
+  const el = document.getElementById("cardFirmBranding");
+  if (!el) return;
+
+  el.style.left = firmX + "px";
+  el.style.top = firmY + "px";
+
+  let rot = "0deg";
+  if (firmOrientation === "vertical") rot = "-90deg";
+  else if (firmOrientation === "vertical-down") rot = "90deg";
+
+  el.style.transform = `translate(-50%, -50%) rotate(${rot})`;
+
+  if (showFirmBranding) el.classList.remove("hidden");
+  else el.classList.add("hidden");
+
+  // Sync text
+  const txtEl = document.getElementById("card_firm_text");
+  if (txtEl && txtEl.innerText !== firmText) {
+    txtEl.innerText = firmText;
   }
-  if (groupEl) {
-    groupEl.style.display = show ? "block" : "none";
+  const inText = document.getElementById("in_firm_text");
+  if (inText && inText.value !== firmText) {
+    inText.value = firmText;
   }
+
+  // Sync orientation buttons
+  document.querySelectorAll(".btn-orient").forEach(b => b.classList.remove("active"));
+  if (firmOrientation === "vertical") {
+    const b = document.getElementById("btnOrientVertical");
+    if (b) b.classList.add("active");
+  } else if (firmOrientation === "horizontal") {
+    const b = document.getElementById("btnOrientHorizontal");
+    if (b) b.classList.add("active");
+  } else if (firmOrientation === "vertical-down") {
+    const b = document.getElementById("btnOrientVerticalDown");
+    if (b) b.classList.add("active");
+  }
+
+  // Sync checkbox
+  const chk = document.getElementById("in_show_firm");
+  if (chk && chk.checked !== showFirmBranding) chk.checked = showFirmBranding;
+
+  const box = document.getElementById("firmDetailsBox");
+  if (box) box.style.display = showFirmBranding ? "block" : "none";
+
+  update4UpClones();
+}
+
+function setFirmText(text) {
+  firmText = text;
+  const txtEl = document.getElementById("card_firm_text");
+  if (txtEl && txtEl.innerText !== text) txtEl.innerText = text;
+  update4UpClones();
   debounceAutoSave();
 }
 
-function updateStudioBrandingText(text) {
-  const brandingTextEl = document.getElementById("card_studio_text");
-  const inTextEl = document.getElementById("in_studio_text");
-  if (brandingTextEl) brandingTextEl.innerText = text;
-  if (inTextEl && inTextEl.value !== text) inTextEl.value = text;
+function setFirmTextFromCard(text) {
+  firmText = text;
+  const inText = document.getElementById("in_firm_text");
+  if (inText) inText.value = text;
+  update4UpClones();
   debounceAutoSave();
+}
+
+function setFirmOrientation(orient) {
+  firmOrientation = orient;
+  applyFirmTransform();
+  debounceAutoSave();
+}
+
+function setFirmPresetPos(presetKey) {
+  const p = firmPresets[presetKey];
+  if (!p) return;
+  firmX = p.x;
+  firmY = p.y;
+  firmOrientation = p.orientation;
+
+  document.querySelectorAll(".btn-pos-chip").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("pos_" + presetKey);
+  if (btn) btn.classList.add("active");
+
+  applyFirmTransform();
+  debounceAutoSave();
+}
+
+function toggleFirmBranding(show) {
+  showFirmBranding = (typeof show === "boolean") ? show : !showFirmBranding;
+  applyFirmTransform();
+  debounceAutoSave();
+}
+
+// Backward compatibility aliases
+function toggleStudioBranding(show) {
+  toggleFirmBranding(show);
+}
+function updateStudioBrandingText(text) {
+  setFirmText(text);
+}
+
+// Interactive Mouse / Touch Dragging on #cardFirmBranding across the card
+function setupFirmInteractiveDrag() {
+  const el = document.getElementById("cardFirmBranding");
+  const card = document.getElementById("shokCard");
+  if (!el || !card) return;
+
+  let isDragging = false;
+  let startMouseX = 0;
+  let startMouseY = 0;
+  let startFirmX = 0;
+  let startFirmY = 0;
+
+  const onDragStart = (clientX, clientY) => {
+    isDragging = true;
+    startMouseX = clientX;
+    startMouseY = clientY;
+    startFirmX = firmX;
+    startFirmY = firmY;
+    el.classList.add("is-dragging");
+  };
+
+  const onDragMove = (clientX, clientY) => {
+    if (!isDragging) return;
+    const deltaX = (clientX - startMouseX) / (currentScale || 1);
+    const deltaY = (clientY - startMouseY) / (currentScale || 1);
+
+    const cardWidth = card.offsetWidth || 1000;
+    const cardHeight = card.offsetHeight || 640;
+
+    firmX = Math.round(Math.min(Math.max(15, startFirmX + deltaX), cardWidth - 15));
+    firmY = Math.round(Math.min(Math.max(15, startFirmY + deltaY), cardHeight - 15));
+
+    applyFirmTransform();
+  };
+
+  const onDragEnd = () => {
+    if (isDragging) {
+      isDragging = false;
+      el.classList.remove("is-dragging");
+      document.querySelectorAll(".btn-pos-chip").forEach(b => b.classList.remove("active"));
+      debounceAutoSave();
+    }
+  };
+
+  el.addEventListener("mousedown", (e) => {
+    if (e.target.classList.contains("firm-remove-btn")) return;
+    if (e.target.classList.contains("firm-text") && document.activeElement === e.target) return;
+    onDragStart(e.clientX, e.clientY);
+    e.preventDefault();
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    onDragMove(e.clientX, e.clientY);
+  });
+
+  window.addEventListener("mouseup", () => {
+    onDragEnd();
+  });
+
+  el.addEventListener("touchstart", (e) => {
+    if (e.target.classList.contains("firm-remove-btn")) return;
+    if (e.target.classList.contains("firm-text") && document.activeElement === e.target) return;
+    if (e.touches.length === 1) {
+      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+      e.stopPropagation();
+    }
+  }, { passive: false });
+
+  window.addEventListener("touchmove", (e) => {
+    if (isDragging && e.touches.length === 1) {
+      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener("touchend", () => {
+    onDragEnd();
+  });
 }
 
 // Interactive Mouse / Touch Dragging & Wheel Zoom on Photo inside frame
@@ -969,8 +1142,13 @@ function downloadCard() {
     guideBar.style.display = "none";
   }
 
+  if (scaler) scaler.classList.add("exporting-firm-clean");
+
   const restoreState = () => {
-    scaler.style.transform = originalTransform;
+    if (scaler) {
+      scaler.style.transform = originalTransform;
+      scaler.classList.remove("exporting-firm-clean");
+    }
     btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> फोटो डाउनलोड (PNG)';
     btn.disabled = false;
     if (is4Up && guideBar) {
@@ -1193,6 +1371,11 @@ function saveDraftToLocalStorage() {
       showGarland,
       showStudioBranding,
       studioText: getValue("in_studio_text"),
+      showFirmBranding,
+      firmText,
+      firmOrientation,
+      firmX,
+      firmY,
       isMarathiNumerals,
       fontSizeBannerTitle: getValue("in_size_banner_title"),
       fontSizeTopDate: getValue("in_size_top_date"),
@@ -1372,6 +1555,12 @@ function loadDraftFromLocalStorage() {
     if (draft.showStudioBranding !== undefined) {
       toggleStudioBranding(draft.showStudioBranding);
     }
+    if (draft.showFirmBranding !== undefined) showFirmBranding = draft.showFirmBranding;
+    if (draft.firmText) firmText = draft.firmText;
+    if (draft.firmOrientation) firmOrientation = draft.firmOrientation;
+    if (draft.firmX !== undefined) firmX = draft.firmX;
+    if (draft.firmY !== undefined) firmY = draft.firmY;
+    applyFirmTransform();
 
     if (draft.isMarathiNumerals !== undefined) {
       isMarathiNumerals = draft.isMarathiNumerals;
@@ -1420,3 +1609,25 @@ function loadDraftFromLocalStorage() {
     console.warn("Could not restore draft:", err);
   }
 }
+
+// ==========================================================================
+// DYNAMIC PRINT PAGE FIT & ORIENTATION
+// ==========================================================================
+window.addEventListener("beforeprint", () => {
+  if (currentCardSize === "a4-4up") {
+    update4UpClones();
+  }
+  let printStyle = document.getElementById("dynamicPrintPageStyle");
+  if (!printStyle) {
+    printStyle = document.createElement("style");
+    printStyle.id = "dynamicPrintPageStyle";
+    document.head.appendChild(printStyle);
+  }
+  const isPortrait = (currentCardSize === "portrait");
+  printStyle.textContent = `@page { size: A4 ${isPortrait ? "portrait" : "landscape"}; margin: 0; }`;
+});
+
+window.addEventListener("afterprint", () => {
+  autoScaleCard();
+});
+

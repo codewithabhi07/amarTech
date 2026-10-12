@@ -605,7 +605,7 @@
 
               <div class="form-group">
                 <div class="label-with-value">
-                  <label>स्टुडिओ वॉटरमार्क (Studio):</label>
+                  <label>फर्म / कॉम्प्युटर नाव (Firm Name):</label>
                   <span id="val_size_studio">11.5px</span>
                 </div>
                 <div class="range-with-btns">
@@ -713,12 +713,59 @@
               <input type="checkbox" id="in_card_3d_shadow" checked onchange="toggleCard3DShadow(this.checked)">
               <label for="in_card_3d_shadow">🌟 ३D कार्ड डेप्थ व वास्तववादी शेड (Realistic 3D Depth)</label>
             </div>
-            <div class="checkbox-row">
-              <input type="checkbox" id="in_show_branding" onchange="toggleStudioBranding(this.checked)">
-              <label for="in_show_branding">🏷️ स्टुडिओ / प्रिंटर क्रेडिट वॉटरमार्क (Studio Branding)</label>
-            </div>
-            <div class="form-group" id="group_studio_text" style="display:none; margin-top: 4px;">
-              <input type="text" id="in_studio_text" value="सौजन्य: अमर ग्राफिक्स, चोपडा" oninput="updateStudioBrandingText(this.value)">
+            <!-- Movable Firm / Computer Name Box (अमर कॉम्प्युटर) -->
+            <div class="firm-controls-card">
+              <div class="firm-card-header">
+                <span><i class="fa-solid fa-laptop-code"></i> फर्म / कॉम्प्युटर नाव (Firm Name):</span>
+                <button type="button" class="btn-micro-remove" onclick="toggleFirmBranding(false)" title="कार्डवरून हे नाव काढून टाका">
+                  <i class="fa-solid fa-trash-can"></i> काढून टाका
+                </button>
+              </div>
+
+              <div class="checkbox-row" style="margin-bottom: 8px;">
+                <input type="checkbox" id="in_show_firm" checked onchange="toggleFirmBranding(this.checked)">
+                <label for="in_show_firm"><strong>कार्डवर फर्म नाव दाखवा</strong> (Show Firm Credit)</label>
+              </div>
+
+              <div id="firmDetailsBox">
+                <div class="form-group">
+                  <label>फर्म नाव व संपर्क क्रमांक:</label>
+                  <input type="text" id="in_firm_text" value="अमर कॉम्प्युटर (९३७०११०२१२)" oninput="setFirmText(this.value)" placeholder="उदा. अमर कॉम्प्युटर (९३७०११०२१२)">
+                </div>
+
+                <!-- Orientation Switch (उभा / आडवा) -->
+                <div class="form-group">
+                  <label><i class="fa-solid fa-arrows-rotate"></i> दिशा व मांडणी (Orientation):</label>
+                  <div class="firm-orient-grid">
+                    <button type="button" class="btn-orient active" id="btnOrientVertical" onclick="setFirmOrientation('vertical')" title="उभा वरच्या दिशेने (Vertical -90°)">
+                      <i class="fa-solid fa-arrow-up-long"></i> उभा (Vertical)
+                    </button>
+                    <button type="button" class="btn-orient" id="btnOrientHorizontal" onclick="setFirmOrientation('horizontal')" title="आडवा सरळ (Horizontal 0°)">
+                      <i class="fa-solid fa-arrow-right-long"></i> आडवा (Horizontal)
+                    </button>
+                    <button type="button" class="btn-orient" id="btnOrientVerticalDown" onclick="setFirmOrientation('vertical-down')" title="उभा खालच्या दिशेने (Vertical 90°)">
+                      <i class="fa-solid fa-arrow-down-long"></i> उभा (90°)
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Quick Position / Corner Presets -->
+                <div class="form-group">
+                  <label><i class="fa-solid fa-location-crosshairs"></i> कोपरे व जागा (Quick Placement):</label>
+                  <div class="firm-pos-presets">
+                    <button type="button" class="btn-pos-chip active" id="pos_right_edge" onclick="setFirmPresetPos('right_edge')">📌 उजवीकडे उभी</button>
+                    <button type="button" class="btn-pos-chip" id="pos_left_edge" onclick="setFirmPresetPos('left_edge')">📌 डावीकडे उभी</button>
+                    <button type="button" class="btn-pos-chip" id="pos_bottom_right" onclick="setFirmPresetPos('bottom_right')">📌 तळाशी उजवी</button>
+                    <button type="button" class="btn-pos-chip" id="pos_bottom_left" onclick="setFirmPresetPos('bottom_left')">📌 तळाशी डावी</button>
+                    <button type="button" class="btn-pos-chip" id="pos_bottom_center" onclick="setFirmPresetPos('bottom_center')">📌 तळाशी मध्य</button>
+                    <button type="button" class="btn-pos-chip" id="pos_top_right" onclick="setFirmPresetPos('top_right')">📌 वरती उजवी</button>
+                  </div>
+                </div>
+
+                <p class="field-hint" style="color: #0369a1; font-size: 11px;">
+                  <i class="fa-solid fa-hand-pointer"></i> <strong>टीप:</strong> तुम्ही थेट कार्डवर हे नाव माऊस किंवा बोटाने धरून (Drag करून) कोणत्याही कोपऱ्यात हवे तिथे फिरवू शकता.
+                </p>
+              </div>
             </div>
             <div class="checkbox-row" style="margin-top: 10px;">
               <input type="checkbox" id="chk_hide_cut_markers" onchange="toggleCutMarkers(this.checked)">
@@ -968,9 +1015,11 @@
 
             </div>
 
-            <!-- Studio Branding / Printer Watermark Credit -->
-            <div class="card-studio-branding hidden" id="cardStudioBranding">
-              <span contenteditable="true" id="card_studio_text">सौजन्य: अमर ग्राफिक्स, चोपडा</span>
+            <!-- Movable Firm / Computer Branding Credit (अमर कॉम्प्युटर - उभा/आडवा/ड्रॅगेबल) -->
+            <div class="card-firm-branding card-studio-branding orientation-vertical" id="cardFirmBranding" title="ड्रॅग करून कुठेही हलवा (Drag anywhere)">
+              <span class="firm-drag-handle" title="कार्डवर कुठेही ड्रॅग करा (Drag)"><i class="fa-solid fa-grip-vertical"></i></span>
+              <span class="firm-text" contenteditable="true" id="card_firm_text" oninput="setFirmTextFromCard(this.innerText)">अमर कॉम्प्युटर (९३७०११०२१२)</span>
+              <button type="button" class="firm-remove-btn" onclick="toggleFirmBranding(false)" title="काढून टाका (Remove)">×</button>
             </div>
             </div>
             <!-- ==================== END OF CARD 1 (MASTER) ==================== -->
