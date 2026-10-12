@@ -1,0 +1,2132 @@
+/* ==========================================================================
+   शोक संदेश पत्रिका संपादक (Shok Sandesh Card Generator) - Stylesheet
+   ========================================================================== */
+
+:root {
+  --primary: #8b1e1e;
+  --primary-hover: #701414;
+  --gold: #d4af37;
+  --gold-dark: #a07817;
+  --gold-light: #fef5d1;
+  --purple-dark: #320743;
+  --purple-mid: #52166a;
+  --bg-slate: #f1f5f9;
+  --sidebar-bg: #ffffff;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --card-font: 'Noto Serif Devanagari', 'Tiro Devanagari Marathi', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-slate);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   APP HEADER
+   ========================================================================== */
+.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #8b1e1e, #d4af37);
+  color: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 10px rgba(139, 30, 30, 0.25);
+}
+
+.brand h1 {
+  font-size: 19px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.brand .subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Theme Toggle (Color vs B&W) */
+.card-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.card-size-selector label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-size-selector select {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+}
+.card-size-selector select:focus {
+  border-color: var(--primary);
+}
+
+.card-theme-toggle {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 3px;
+  display: flex;
+  border: 1px solid #cbd5e1;
+}
+
+.theme-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  color: #475569;
+}
+
+.theme-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.color-dot.color-gold {
+  background: linear-gradient(135deg, #d4af37, #8b1e1e);
+}
+
+.color-dot.color-bw {
+  background: linear-gradient(135deg, #000000, #888888);
+}
+
+/* Action Buttons */
+.action-btn {
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.btn-secondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8b1e1e, #b82525);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(139, 30, 30, 0.3);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #701414, #9c1d1d);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   MAIN LAYOUT (Split View: Left Sidebar & Right Canvas)
+   ========================================================================== */
+.main-layout {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 65px);
+  overflow: hidden;
+}
+
+/* LEFT SIDEBAR: Editor Form */
+.editor-panel {
+  width: 440px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+  flex-shrink: 0;
+}
+
+.panel-header {
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.panel-title i {
+  color: var(--primary);
+}
+
+.badge-hint {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 11px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #bfdbfe;
+}
+
+/* Accordion sections */
+.accordion-container {
+  padding: 12px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.accordion-item {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.accordion-item[open] {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.accordion-header {
+  list-style: none;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  background: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.accordion-header::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-header i.fa-solid:first-child {
+  color: var(--primary);
+  margin-right: 6px;
+  width: 18px;
+  text-align: center;
+}
+
+.accordion-header .arrow {
+  font-size: 12px;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.accordion-item[open] .arrow {
+  transform: rotate(180deg);
+}
+
+.accordion-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fff;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Form inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139, 30, 30, 0.12);
+}
+
+.highlight-input {
+  border-color: #f87171 !important;
+  font-weight: 700;
+  color: #991b1b !important;
+  background: #fff5f5;
+}
+
+.input-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.input-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+/* File Drop Zone */
+.file-drop-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+.file-drop-zone:hover {
+  border-color: var(--primary);
+  background: #fff1f2;
+}
+.file-drop-zone i {
+  font-size: 24px;
+  color: var(--primary);
+}
+.file-drop-zone span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+.file-drop-zone small {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Photo Controls Box */
+.photo-controls-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.control-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 6px;
+}
+
+.control-box-header span i {
+  color: var(--primary);
+  margin-right: 4px;
+}
+
+.btn-micro {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+.btn-micro:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.label-with-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.label-with-value span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e40af;
+  background: #eff6ff;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.range-with-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-btn {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-btn:hover {
+  background: #e2e8f0;
+}
+
+.rotate-btn-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.rot-btn {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  padding: 5px 2px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #334155;
+  transition: all 0.15s ease;
+}
+.rot-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  user-select: none;
+  padding-top: 4px;
+}
+.checkbox-row input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.drag-hint-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #92400e;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.35;
+}
+.drag-hint-box i {
+  color: #d97706;
+  margin-top: 2px;
+}
+
+/* Theme Palette Grid in Editor */
+.theme-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.theme-swatch {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 6px 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.theme-swatch:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.theme-swatch.active {
+  border-color: var(--primary);
+  background: #fff5f5;
+  box-shadow: 0 0 0 2px rgba(139, 30, 30, 0.2);
+}
+
+.swatch-preview {
+  width: 100%;
+  height: 22px;
+  border-radius: 4px;
+  display: block;
+}
+
+.theme-swatch-gold {
+  background: linear-gradient(135deg, #fff7d6 0%, #b8860b 50%, #4a044e 100%);
+}
+.theme-swatch-bw {
+  background: linear-gradient(135deg, #ffffff 0%, #71717a 50%, #000000 100%);
+}
+.theme-swatch-white {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 70%, #94a3b8 100%);
+}
+.theme-swatch-saffron {
+  background: linear-gradient(135deg, #fffbeb 0%, #f59e0b 50%, #b45309 100%);
+}
+.theme-swatch-parchment {
+  background: linear-gradient(135deg, #fef3c7 0%, #d97706 50%, #78350f 100%);
+}
+.theme-swatch-navy {
+  background: linear-gradient(135deg, #eff6ff 0%, #1e40af 50%, #d4af37 100%);
+}
+.theme-swatch-lotus {
+  background: linear-gradient(135deg, #fff1f2 0%, #f43f5e 50%, #881337 100%);
+}
+.theme-swatch-emerald {
+  background: linear-gradient(135deg, #f0fdf4 0%, #15803d 50%, #ca8a04 100%);
+}
+.theme-swatch-midnight {
+  background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #eab308 100%);
+}
+.theme-swatch-ganga {
+  background: linear-gradient(135deg, #f8fafc 0%, #64748b 50%, #334155 100%);
+}
+.theme-swatch-autumn {
+  background: linear-gradient(135deg, #fffbeb 0%, #b45309 50%, #78350f 100%);
+}
+.theme-swatch-rudraksha {
+  background: linear-gradient(135deg, #fef2f2 0%, #991b1b 50%, #450a0a 100%);
+}
+
+.swatch-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Shokakul dynamically managed list */
+.shokakul-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.shokakul-item-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.shokakul-item-row input {
+  font-size: 13px;
+  padding: 6px 8px;
+}
+
+.btn-remove-row {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.btn-remove-row:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-add-name {
+  margin-top: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px dashed #86efac;
+  padding: 7px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-add-name:hover {
+  background: #dcfce7;
+}
+
+/* ==========================================================================
+   RIGHT PREVIEW AREA (Card Canvas Viewport)
+   ========================================================================== */
+.preview-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #2b303c;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-toolbar {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 8px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  z-index: 10;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+.tool-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+.tool-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.edit-hint-chip {
+  font-size: 12px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.edit-hint-chip i {
+  color: #fbbf24;
+}
+
+.preview-viewport {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.card-scaler {
+  transform-origin: center center;
+  transition: transform 0.15s ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================================
+   THE CONDOLENCE CARD (शोक संदेश पत्रिका) - PIXEL ACCURATE
+   Standard 1020px x 650px canvas ratio (Standard High Res Invitation)
+   ========================================================================== */
+.shok-card {
+  position: relative;
+  font-family: var(--card-font);
+  padding: 24px 28px;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  user-select: text;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: width 0.25s ease, min-height 0.25s ease;
+}
+
+/* Card Size Presets */
+.shok-card.size-landscape {
+  width: 1000px;
+  min-height: 640px;
+}
+
+.shok-card.size-portrait {
+  width: 720px;
+  min-height: 980px;
+  padding: 22px 24px;
+}
+
+.shok-card.size-portrait .card-header-row {
+  grid-template-columns: 160px 1fr 160px;
+}
+.shok-card.size-portrait .top-village-badge {
+  font-size: 24px;
+}
+.shok-card.size-portrait .shok-sandesh-badge span {
+  font-size: 26px;
+  padding: 4px 18px;
+}
+.shok-card.size-portrait .top-date-box {
+  font-size: 18px;
+  padding: 3px 12px;
+}
+.shok-card.size-portrait .card-body-row {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.shok-card.size-portrait .card-left-col {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.shok-card.size-portrait .venue-card-box {
+  width: 260px;
+}
+.shok-card.size-portrait .deceased-name-main {
+  font-size: 26px;
+}
+.shok-card.size-portrait .announcement-paragraph {
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+.shok-card.size-square {
+  width: 850px;
+  min-height: 850px;
+  padding: 24px;
+}
+.shok-card.size-square .card-body-row {
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+}
+
+.shok-card.size-a4 {
+  width: 1120px;
+  min-height: 790px;
+}
+
+/* ==========================================================================
+   THEMES SYSTEM (6 ULTRA-REALISTIC CONDOLENCE THEMES)
+   ========================================================================== */
+
+/* 1. सुवर्ण राजेशाही (Royal Gold - Color) */
+.shok-card.theme-royal-gold,
+.shok-card.theme-color {
+  --card-bg: linear-gradient(135deg, #fffcf5 0%, #fff6e0 50%, #fffbf0 100%);
+  --border-outer: #a66a1e;
+  --border-inner: #633a08;
+  --frame-line: #b87b1c;
+  --ornament-fill: #966115;
+  --ornament-accent: #c98b2c;
+  --top-village-color: #b01818;
+  --banner-bg: linear-gradient(180deg, #510a72 0%, #29023c 100%);
+  --banner-border: #ffd700;
+  --banner-text: #ffffff;
+  --banner-wing: #b87b1c;
+  --date-border: #8b1e1e;
+  --date-color: #b01818;
+  --date-bg: rgba(255, 255, 255, 0.7);
+  --photo-frame-bg: linear-gradient(135deg, #d4af37, #9c6a1e);
+  --photo-frame-border: #b87b1c;
+  --venue-bg: linear-gradient(180deg, #fff0f5 0%, #fbf3ff 100%);
+  --venue-border: #b070bb;
+  --venue-badge-bg: linear-gradient(180deg, #4d0a6e 0%, #250239 100%);
+  --name-color: #b01818;
+  --name-sub-color: #2b1104;
+  --divider-color: #b87b1c;
+  --text-color: #1f0b01;
+  --shokakul-bg: linear-gradient(180deg, #fff7fb 0%, #faf0f8 100%);
+  --shokakul-border: #d89be6;
+  --shokakul-badge-bg: linear-gradient(180deg, #4d0a6e 0%, #250239 100%);
+  --bullet-color: #b01818;
+  --footer-color: #b01818;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #d4af37, #9c6a1e);
+  --diya-pot-border: #784400;
+  color: #261102;
+}
+
+/* 2. कृष्णधवल प्रिंट (Classic B&W Print) */
+.shok-card.theme-bw {
+  --card-bg: #ffffff;
+  --border-outer: #000000;
+  --border-inner: #000000;
+  --frame-line: #000000;
+  --ornament-fill: #000000;
+  --ornament-accent: #333333;
+  --top-village-color: #000000;
+  --banner-bg: #000000;
+  --banner-border: #000000;
+  --banner-text: #ffffff;
+  --banner-wing: #000000;
+  --date-border: #000000;
+  --date-color: #000000;
+  --date-bg: #ffffff;
+  --photo-frame-bg: #000000;
+  --photo-frame-border: #000000;
+  --venue-bg: #ffffff;
+  --venue-border: #000000;
+  --venue-badge-bg: #000000;
+  --name-color: #000000;
+  --name-sub-color: #000000;
+  --divider-color: #000000;
+  --text-color: #000000;
+  --shokakul-bg: #ffffff;
+  --shokakul-border: #000000;
+  --shokakul-badge-bg: #000000;
+  --bullet-color: #000000;
+  --footer-color: #ffffff;
+  --footer-bg: #000000;
+  --diya-pot-bg: #000000;
+  --diya-pot-border: #000000;
+  color: #000000;
+}
+
+/* 3. सात्विक श्वेत-शांती (Pure White Serenity) */
+.shok-card.theme-white-serene {
+  --card-bg: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+  --border-outer: #475569;
+  --border-inner: #94a3b8;
+  --frame-line: #cbd5e1;
+  --ornament-fill: #475569;
+  --ornament-accent: #94a3b8;
+  --top-village-color: #334155;
+  --banner-bg: linear-gradient(180deg, #475569 0%, #1e293b 100%);
+  --banner-border: #e2e8f0;
+  --banner-text: #ffffff;
+  --banner-wing: #64748b;
+  --date-border: #475569;
+  --date-color: #1e293b;
+  --date-bg: rgba(255, 255, 255, 0.85);
+  --photo-frame-bg: linear-gradient(135deg, #94a3b8, #64748b);
+  --photo-frame-border: #475569;
+  --venue-bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --venue-border: #94a3b8;
+  --venue-badge-bg: linear-gradient(180deg, #475569 0%, #1e293b 100%);
+  --name-color: #1e293b;
+  --name-sub-color: #334155;
+  --divider-color: #94a3b8;
+  --text-color: #1e293b;
+  --shokakul-bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --shokakul-border: #cbd5e1;
+  --shokakul-badge-bg: linear-gradient(180deg, #475569 0%, #1e293b 100%);
+  --bullet-color: #475569;
+  --footer-color: #1e293b;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #94a3b8, #64748b);
+  --diya-pot-border: #475569;
+  color: #1e293b;
+}
+
+/* 4. भगवा / केशर पारंपारिक (Spiritual Saffron) */
+.shok-card.theme-saffron {
+  --card-bg: linear-gradient(135deg, #fffdf7 0%, #fff7eb 50%, #ffeed5 100%);
+  --border-outer: #c2410c;
+  --border-inner: #7c2d12;
+  --frame-line: #ea580c;
+  --ornament-fill: #b45309;
+  --ornament-accent: #f59e0b;
+  --top-village-color: #c2410c;
+  --banner-bg: linear-gradient(180deg, #ea580c 0%, #9a3412 100%);
+  --banner-border: #fef08a;
+  --banner-text: #ffffff;
+  --banner-wing: #c2410c;
+  --date-border: #c2410c;
+  --date-color: #9a3412;
+  --date-bg: rgba(255, 255, 255, 0.7);
+  --photo-frame-bg: linear-gradient(135deg, #f59e0b, #b45309);
+  --photo-frame-border: #c2410c;
+  --venue-bg: linear-gradient(180deg, #fffbeb 0%, #ffedd5 100%);
+  --venue-border: #ea580c;
+  --venue-badge-bg: linear-gradient(180deg, #c2410c 0%, #7c2d12 100%);
+  --name-color: #c2410c;
+  --name-sub-color: #431407;
+  --divider-color: #ea580c;
+  --text-color: #431407;
+  --shokakul-bg: linear-gradient(180deg, #fffdfa 0%, #ffedd5 100%);
+  --shokakul-border: #fdba74;
+  --shokakul-badge-bg: linear-gradient(180deg, #c2410c 0%, #7c2d12 100%);
+  --bullet-color: #ea580c;
+  --footer-color: #c2410c;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #f59e0b, #b45309);
+  --diya-pot-border: #7c2d12;
+  color: #431407;
+}
+
+/* 5. विंटेज चर्मपत्र (Antique Parchment) */
+.shok-card.theme-vintage-parchment {
+  --card-bg: linear-gradient(135deg, #fbf2db 0%, #f5e6c4 50%, #eee0b9 100%);
+  --border-outer: #78350f;
+  --border-inner: #451a03;
+  --frame-line: #92400e;
+  --ornament-fill: #78350f;
+  --ornament-accent: #b45309;
+  --top-village-color: #78350f;
+  --banner-bg: linear-gradient(180deg, #78350f 0%, #451a03 100%);
+  --banner-border: #fde68a;
+  --banner-text: #fef3c7;
+  --banner-wing: #78350f;
+  --date-border: #78350f;
+  --date-color: #78350f;
+  --date-bg: rgba(255, 255, 255, 0.5);
+  --photo-frame-bg: linear-gradient(135deg, #92400e, #78350f);
+  --photo-frame-border: #451a03;
+  --venue-bg: linear-gradient(180deg, #fbf3e0 0%, #f3dec2 100%);
+  --venue-border: #92400e;
+  --venue-badge-bg: linear-gradient(180deg, #78350f 0%, #451a03 100%);
+  --name-color: #78350f;
+  --name-sub-color: #3e1d08;
+  --divider-color: #92400e;
+  --text-color: #3e1d08;
+  --shokakul-bg: linear-gradient(180deg, #fbf3e0 0%, #f3dec2 100%);
+  --shokakul-border: #d5a87b;
+  --shokakul-badge-bg: linear-gradient(180deg, #78350f 0%, #451a03 100%);
+  --bullet-color: #78350f;
+  --footer-color: #78350f;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #92400e, #78350f);
+  --diya-pot-border: #451a03;
+  color: #3e1d08;
+}
+
+/* 6. राजेशाही निळसर (Navy & Gold Elegance) */
+.shok-card.theme-navy-gold {
+  --card-bg: linear-gradient(135deg, #f8faff 0%, #f0f4ff 50%, #fffef7 100%);
+  --border-outer: #1e3a8a;
+  --border-inner: #b45309;
+  --frame-line: #d97706;
+  --ornament-fill: #1e3a8a;
+  --ornament-accent: #d4af37;
+  --top-village-color: #1e3a8a;
+  --banner-bg: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+  --banner-border: #fde047;
+  --banner-text: #ffffff;
+  --banner-wing: #d4af37;
+  --date-border: #1e3a8a;
+  --date-color: #1e3a8a;
+  --date-bg: rgba(255, 255, 255, 0.8);
+  --photo-frame-bg: linear-gradient(135deg, #d4af37, #1e3a8a);
+  --photo-frame-border: #1e3a8a;
+  --venue-bg: linear-gradient(180deg, #f0f4ff 0%, #e0e7ff 100%);
+  --venue-border: #3b82f6;
+  --venue-badge-bg: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+  --name-color: #1e3a8a;
+  --name-sub-color: #0f172a;
+  --divider-color: #d4af37;
+  --text-color: #0f172a;
+  --shokakul-bg: linear-gradient(180deg, #f8faff 0%, #eff6ff 100%);
+  --shokakul-border: #93c5fd;
+  --shokakul-badge-bg: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+  --bullet-color: #1e3a8a;
+  --footer-color: #1e3a8a;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #d4af37, #1e3a8a);
+  --diya-pot-border: #0f172a;
+  color: #0f172a;
+}
+
+/* 7. गुलाबी कमळ श्रद्धांजली (Sacred Pink Lotus) */
+.shok-card.theme-pink-lotus {
+  --card-bg: linear-gradient(135deg, #fffafa 0%, #fff1f3 50%, #ffeef2 100%);
+  --border-outer: #be185d;
+  --border-inner: #831843;
+  --frame-line: #db2777;
+  --ornament-fill: #be185d;
+  --ornament-accent: #f472b6;
+  --top-village-color: #9d174d;
+  --banner-bg: linear-gradient(180deg, #9d174d 0%, #500724 100%);
+  --banner-border: #fbcfe8;
+  --banner-text: #ffffff;
+  --banner-wing: #db2777;
+  --date-border: #be185d;
+  --date-color: #9d174d;
+  --date-bg: rgba(255, 255, 255, 0.85);
+  --photo-frame-bg: linear-gradient(135deg, #f472b6, #be185d);
+  --photo-frame-border: #831843;
+  --venue-bg: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  --venue-border: #f472b6;
+  --venue-badge-bg: linear-gradient(180deg, #9d174d 0%, #700730 100%);
+  --name-color: #9d174d;
+  --name-sub-color: #500724;
+  --divider-color: #db2777;
+  --text-color: #4c0519;
+  --shokakul-bg: linear-gradient(180deg, #fff1f2 0%, #fdf2f8 100%);
+  --shokakul-border: #f9a8d4;
+  --shokakul-badge-bg: linear-gradient(180deg, #9d174d 0%, #700730 100%);
+  --bullet-color: #be185d;
+  --footer-color: #9d174d;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #f472b6, #be185d);
+  --diya-pot-border: #831843;
+  color: #4c0519;
+}
+
+/* 8. गोदावरी चंदन-हिरवा (Emerald & Sandalwood) */
+.shok-card.theme-emerald-chandan {
+  --card-bg: linear-gradient(135deg, #fbfdf9 0%, #f2f9ed 50%, #eaf4e3 100%);
+  --border-outer: #15803d;
+  --border-inner: #14532d;
+  --frame-line: #b45309;
+  --ornament-fill: #166534;
+  --ornament-accent: #ca8a04;
+  --top-village-color: #166534;
+  --banner-bg: linear-gradient(180deg, #166534 0%, #052e16 100%);
+  --banner-border: #fef08a;
+  --banner-text: #ffffff;
+  --banner-wing: #ca8a04;
+  --date-border: #15803d;
+  --date-color: #166534;
+  --date-bg: rgba(255, 255, 255, 0.85);
+  --photo-frame-bg: linear-gradient(135deg, #ca8a04, #15803d);
+  --photo-frame-border: #14532d;
+  --venue-bg: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+  --venue-border: #4ade80;
+  --venue-badge-bg: linear-gradient(180deg, #15803d 0%, #14532d 100%);
+  --name-color: #14532d;
+  --name-sub-color: #1c1917;
+  --divider-color: #ca8a04;
+  --text-color: #1c1917;
+  --shokakul-bg: linear-gradient(180deg, #f7fdf9 0%, #e8f7ee 100%);
+  --shokakul-border: #86efac;
+  --shokakul-badge-bg: linear-gradient(180deg, #15803d 0%, #14532d 100%);
+  --bullet-color: #15803d;
+  --footer-color: #166534;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #ca8a04, #15803d);
+  --diya-pot-border: #14532d;
+  color: #14532d;
+}
+
+/* 9. मध्यरात्री काळा-सोनेरी (Midnight Obsidian & 24K Gold) */
+.shok-card.theme-midnight-gold {
+  --card-bg: linear-gradient(135deg, #1c1917 0%, #12100e 50%, #0c0a09 100%);
+  --border-outer: #d4af37;
+  --border-inner: #996515;
+  --frame-line: #ffd700;
+  --ornament-fill: #ffd700;
+  --ornament-accent: #d4af37;
+  --top-village-color: #ffd700;
+  --banner-bg: linear-gradient(180deg, #27221d 0%, #000000 100%);
+  --banner-border: #ffd700;
+  --banner-text: #ffffff;
+  --banner-wing: #ffd700;
+  --date-border: #d4af37;
+  --date-color: #ffd700;
+  --date-bg: rgba(0, 0, 0, 0.7);
+  --photo-frame-bg: linear-gradient(135deg, #ffd700, #996515);
+  --photo-frame-border: #ffd700;
+  --venue-bg: linear-gradient(180deg, #24201c 0%, #171412 100%);
+  --venue-border: #b8860b;
+  --venue-badge-bg: linear-gradient(180deg, #3d352b 0%, #171412 100%);
+  --name-color: #ffd700;
+  --name-sub-color: #e7e5e4;
+  --divider-color: #d4af37;
+  --text-color: #f5f5f4;
+  --shokakul-bg: linear-gradient(180deg, #24201c 0%, #171412 100%);
+  --shokakul-border: #996515;
+  --shokakul-badge-bg: linear-gradient(180deg, #3d352b 0%, #171412 100%);
+  --bullet-color: #ffd700;
+  --footer-color: #ffd700;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #ffd700, #996515);
+  --diya-pot-border: #ffd700;
+  color: #f5f5f4;
+}
+.shok-card.theme-midnight-gold .highlight-date,
+.shok-card.theme-midnight-gold .highlight-word {
+  color: #fef08a !important;
+}
+.shok-card.theme-midnight-gold .highlight-ritual-title {
+  color: #facc15 !important;
+}
+
+/* 10. काशी-गंगा मोक्षधाम (Ganga Moksha Silver) */
+.shok-card.theme-ganga-moksha {
+  --card-bg: linear-gradient(135deg, #f8fafc 0%, #eef2f6 50%, #e2e8f0 100%);
+  --border-outer: #334155;
+  --border-inner: #64748b;
+  --frame-line: #94a3b8;
+  --ornament-fill: #334155;
+  --ornament-accent: #64748b;
+  --top-village-color: #1e293b;
+  --banner-bg: linear-gradient(180deg, #334155 0%, #0f172a 100%);
+  --banner-border: #cbd5e1;
+  --banner-text: #ffffff;
+  --banner-wing: #64748b;
+  --date-border: #334155;
+  --date-color: #1e293b;
+  --date-bg: rgba(255, 255, 255, 0.9);
+  --photo-frame-bg: linear-gradient(135deg, #cbd5e1, #64748b);
+  --photo-frame-border: #334155;
+  --venue-bg: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+  --venue-border: #64748b;
+  --venue-badge-bg: linear-gradient(180deg, #334155 0%, #0f172a 100%);
+  --name-color: #0f172a;
+  --name-sub-color: #334155;
+  --divider-color: #64748b;
+  --text-color: #0f172a;
+  --shokakul-bg: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  --shokakul-border: #94a3b8;
+  --shokakul-badge-bg: linear-gradient(180deg, #334155 0%, #0f172a 100%);
+  --bullet-color: #334155;
+  --footer-color: #0f172a;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #cbd5e1, #64748b);
+  --diya-pot-border: #334155;
+  color: #0f172a;
+}
+
+/* 11. पानगळ तपोवन (Autumn Ochre & Bronze) */
+.shok-card.theme-terracotta-autumn {
+  --card-bg: linear-gradient(135deg, #fefce8 0%, #fef3c7 50%, #fae8b4 100%);
+  --border-outer: #9a3412;
+  --border-inner: #7c2d12;
+  --frame-line: #d97706;
+  --ornament-fill: #9a3412;
+  --ornament-accent: #d97706;
+  --top-village-color: #9a3412;
+  --banner-bg: linear-gradient(180deg, #9a3412 0%, #431407 100%);
+  --banner-border: #fde68a;
+  --banner-text: #ffffff;
+  --banner-wing: #d97706;
+  --date-border: #9a3412;
+  --date-color: #9a3412;
+  --date-bg: rgba(255, 255, 255, 0.7);
+  --photo-frame-bg: linear-gradient(135deg, #d97706, #9a3412);
+  --photo-frame-border: #7c2d12;
+  --venue-bg: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+  --venue-border: #d97706;
+  --venue-badge-bg: linear-gradient(180deg, #9a3412 0%, #431407 100%);
+  --name-color: #9a3412;
+  --name-sub-color: #431407;
+  --divider-color: #d97706;
+  --text-color: #431407;
+  --shokakul-bg: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+  --shokakul-border: #fcd34d;
+  --shokakul-badge-bg: linear-gradient(180deg, #9a3412 0%, #431407 100%);
+  --bullet-color: #9a3412;
+  --footer-color: #9a3412;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #d97706, #9a3412);
+  --diya-pot-border: #7c2d12;
+  color: #431407;
+}
+
+/* 12. कैलास-रुद्राक्ष शांतता (Rudraksha Deep Maroon) */
+.shok-card.theme-rudraksha-maroon {
+  --card-bg: linear-gradient(135deg, #fff5f5 0%, #fef2f2 50%, #fee2e2 100%);
+  --border-outer: #881337;
+  --border-inner: #4c0519;
+  --frame-line: #b91c1c;
+  --ornament-fill: #881337;
+  --ornament-accent: #dc2626;
+  --top-village-color: #881337;
+  --banner-bg: linear-gradient(180deg, #881337 0%, #4c0519 100%);
+  --banner-border: #fecdd3;
+  --banner-text: #ffffff;
+  --banner-wing: #dc2626;
+  --date-border: #881337;
+  --date-color: #881337;
+  --date-bg: rgba(255, 255, 255, 0.85);
+  --photo-frame-bg: linear-gradient(135deg, #dc2626, #881337);
+  --photo-frame-border: #4c0519;
+  --venue-bg: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  --venue-border: #fb7185;
+  --venue-badge-bg: linear-gradient(180deg, #881337 0%, #4c0519 100%);
+  --name-color: #881337;
+  --name-sub-color: #4c0519;
+  --divider-color: #e11d48;
+  --text-color: #4c0519;
+  --shokakul-bg: linear-gradient(180deg, #fff1f2 0%, #fdf2f8 100%);
+  --shokakul-border: #fda4af;
+  --shokakul-badge-bg: linear-gradient(180deg, #881337 0%, #4c0519 100%);
+  --bullet-color: #881337;
+  --footer-color: #881337;
+  --footer-bg: transparent;
+  --diya-pot-bg: linear-gradient(180deg, #dc2626, #881337);
+  --diya-pot-border: #4c0519;
+  color: #4c0519;
+}
+
+/* ==========================================================================
+   BORDER DESIGNS & TEXTURE OVERLAYS
+   ========================================================================== */
+.shok-card {
+  background: var(--card-bg);
+  border: 8px solid var(--border-outer);
+  outline: 3px solid var(--border-inner);
+  outline-offset: -12px;
+}
+
+.shok-card.border-vintage-floral {
+  border: 7px double var(--border-outer);
+  outline: 2px dashed var(--frame-line);
+  outline-offset: -10px;
+}
+
+.shok-card.border-double-classic {
+  border: 8px solid var(--border-outer);
+  outline: 3px solid var(--frame-line);
+  outline-offset: -12px;
+}
+
+.shok-card.border-minimal {
+  border: 4px solid var(--border-outer);
+  outline: none;
+}
+.shok-card.border-minimal .card-ornament-corners {
+  display: none;
+}
+
+/* Realistic Paper Texture Overlay */
+.card-texture-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.65;
+}
+
+.card-texture-overlay.texture-subtle {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.02) 100%),
+    repeating-linear-gradient(45deg, rgba(0,0,0,0.008) 0px, rgba(0,0,0,0.008) 2px, transparent 2px, transparent 4px);
+}
+
+.card-texture-overlay.texture-canvas {
+  background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px);
+}
+
+.card-texture-overlay.texture-smooth {
+  display: none;
+}
+
+/* 3D Realistic Depth on Card */
+.shok-card.realistic-depth {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55), 
+              0 0 0 1px rgba(0,0,0,0.1), 
+              inset 0 0 40px rgba(0,0,0,0.04);
+}
+
+.shok-card .card-inner-frame {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  border: 2px solid var(--frame-line);
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+.ornament-fill {
+  fill: var(--ornament-fill);
+}
+.ornament-accent {
+  fill: var(--ornament-accent);
+}
+
+/* Ornate Corner Elements (SVG) */
+.card-ornament-corners {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.corner {
+  position: absolute;
+  width: 55px;
+  height: 55px;
+}
+
+.corner-tl { top: 3px; left: 3px; }
+.corner-tr { top: 3px; right: 3px; transform: scaleX(-1); }
+.corner-bl { bottom: 3px; left: 3px; transform: scaleY(-1); }
+.corner-br { bottom: 3px; right: 3px; transform: scale(-1); }
+
+/* Card Inner Content Container */
+.card-inner-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   CARD HEADER ROW (Village | Banner | Date)
+   ========================================================================== */
+.card-header-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  align-items: center;
+  padding: 0 4px;
+}
+
+/* Top Left */
+.header-col-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.top-village-badge {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  outline: none;
+}
+.theme-color .top-village-badge {
+  color: #b01818;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.7);
+}
+.theme-bw .top-village-badge {
+  color: #000000;
+  border-bottom: 2px solid #000;
+  padding-bottom: 2px;
+}
+
+.top-om-shanti {
+  font-size: 17px;
+  font-weight: 700;
+  margin-top: 4px;
+  outline: none;
+}
+.theme-color .top-om-shanti {
+  color: #b01818;
+}
+.theme-bw .top-om-shanti {
+  color: #000000;
+}
+
+/* Top Center: Royal Ribbon / Pill Banner */
+.header-col-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title-ribbon-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flourish-wing {
+  width: 48px;
+  height: 24px;
+}
+.theme-color .flourish-wing {
+  color: #b87b1c;
+}
+.theme-bw .flourish-wing {
+  color: #000000;
+}
+.flourish-wing svg {
+  width: 100%;
+  height: 100%;
+}
+
+.shok-sandesh-badge {
+  padding: 6px 36px;
+  border-radius: 40px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-color .shok-sandesh-badge {
+  background: linear-gradient(180deg, #510a72 0%, #29023c 100%);
+  border: 2px solid #ffd700;
+  box-shadow: 0 4px 10px rgba(45, 3, 62, 0.4), inset 0 1px 3px rgba(255,255,255,0.4);
+  color: #ffffff;
+}
+.theme-bw .shok-sandesh-badge {
+  background: #000000;
+  border: 2px solid #000000;
+  color: #ffffff;
+}
+
+.shok-sandesh-badge span {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  outline: none;
+  line-height: 1.1;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Top Right: Date Badge */
+.header-col-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.top-date-box {
+  border-radius: 12px;
+  padding: 4px 18px;
+  font-size: 22px;
+  font-weight: 800;
+}
+.theme-color .top-date-box {
+  border: 2px solid #8b1e1e;
+  background: rgba(255, 255, 255, 0.7);
+  color: #b01818;
+}
+.theme-bw .top-date-box {
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
+}
+.top-date-box span {
+  outline: none;
+}
+
+/* ==========================================================================
+   CARD BODY ROW (LEFT PHOTO + VENUE | RIGHT TEXT & SHOKAKUL)
+   ========================================================================== */
+.card-body-row {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 22px;
+  margin-top: 4px;
+}
+
+/* ------------------------------------
+   LEFT COLUMN (Photo Frame & Venue Box)
+   ------------------------------------ */
+.card-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+/* Photo Frame */
+.photo-frame-wrapper {
+  position: relative;
+  width: 220px;
+}
+
+.ornate-photo-frame {
+  width: 220px;
+  height: 250px;
+  overflow: hidden;
+  padding: 6px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+/* Frame Shapes */
+.ornate-photo-frame.shape-arch,
+.ornate-photo-frame.shape-arch .photo-inner {
+  border-radius: 36px 36px 12px 12px;
+}
+
+.ornate-photo-frame.shape-oval,
+.ornate-photo-frame.shape-oval .photo-inner {
+  border-radius: 50%;
+}
+
+.ornate-photo-frame.shape-rounded,
+.ornate-photo-frame.shape-rounded .photo-inner {
+  border-radius: 20px;
+}
+
+.ornate-photo-frame.shape-rect,
+.ornate-photo-frame.shape-rect .photo-inner {
+  border-radius: 4px;
+}
+
+.theme-color .ornate-photo-frame {
+  background: linear-gradient(135deg, #d4af37, #9c6a1e);
+  border: 3px solid #b87b1c;
+  box-shadow: 0 6px 14px rgba(100, 50, 0, 0.25);
+}
+
+.theme-bw .ornate-photo-frame {
+  background: #000000;
+  border: 3px solid #000000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.photo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #f1f5f9;
+  cursor: grab;
+  user-select: none;
+}
+.photo-inner:active {
+  cursor: grabbing;
+}
+
+.photo-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.04s ease-out;
+  pointer-events: auto;
+}
+
+/* Photo Filters */
+.photo-filter-grayscale img {
+  filter: grayscale(100%) contrast(115%);
+}
+.photo-filter-bright img {
+  filter: brightness(1.25) contrast(1.08);
+}
+.photo-filter-sepia img {
+  filter: sepia(0.85) contrast(1.1);
+}
+
+/* Flower Garland below photo */
+.photo-garland {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.photo-garland.hidden {
+  display: none !important;
+}
+
+.theme-bw .photo-garland {
+  filter: grayscale(100%) contrast(150%);
+}
+
+/* Venue Card Box (कार्यस्थळ) */
+.venue-card-box {
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  position: relative;
+}
+
+.theme-color .venue-card-box {
+  background: linear-gradient(180deg, #fff0f5 0%, #fbf3ff 100%);
+  border: 2px solid #b070bb;
+  box-shadow: 0 4px 10px rgba(130, 40, 140, 0.12);
+}
+
+.theme-bw .venue-card-box {
+  background: #ffffff;
+  border: 2px solid #000000;
+}
+
+.venue-badge {
+  display: inline-block;
+  padding: 3px 20px;
+  border-radius: 20px;
+  margin-top: -18px;
+  margin-bottom: 6px;
+}
+
+.theme-color .venue-badge {
+  background: linear-gradient(180deg, #4d0a6e 0%, #250239 100%);
+  border: 1px solid #ffd700;
+  color: #ffffff;
+}
+
+.theme-bw .venue-badge {
+  background: #000000;
+  border: 1px solid #000000;
+  color: #ffffff;
+}
+
+.venue-badge span {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.venue-content-with-diyas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+/* Traditional Diya (पणती) with flame */
+.diya-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.diya-flame {
+  width: 10px;
+  height: 18px;
+  background: radial-gradient(ellipse at bottom, #fff700 0%, #ff6600 70%, transparent 100%);
+  border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+  box-shadow: 0 0 10px #ff9900;
+  animation: flicker 1.8s infinite alternate;
+}
+
+.theme-bw .diya-flame {
+  background: #000000;
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes flicker {
+  0% { transform: scale(1) rotate(-1deg); opacity: 0.9; }
+  100% { transform: scale(1.08) rotate(1deg); opacity: 1; }
+}
+
+.diya-pot {
+  width: 28px;
+  height: 14px;
+  border-radius: 2px 2px 14px 14px;
+  margin-top: -2px;
+}
+
+.theme-color .diya-pot {
+  background: linear-gradient(180deg, #d4af37, #9c6a1e);
+  border: 1px solid #784400;
+}
+
+.theme-bw .diya-pot {
+  background: #000000;
+  border: 1px solid #000000;
+}
+
+.venue-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.venue-line {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2e1003;
+  outline: none;
+}
+
+.venue-line.village-name {
+  font-size: 21px;
+  font-weight: 900;
+}
+.theme-color .venue-line.village-name {
+  color: #b01818;
+}
+.theme-bw .venue-line.village-name {
+  color: #000000;
+}
+
+/* ------------------------------------
+   RIGHT COLUMN (Announcement Details & Shokakul)
+   ------------------------------------ */
+.card-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Recipient Line (श्री.रा. रा. ______________ यांना) */
+.recipient-line {
+  font-size: 19px;
+  font-weight: 700;
+}
+.theme-color .recipient-line {
+  color: #2b1104;
+}
+.theme-bw .recipient-line {
+  color: #000000;
+}
+.recipient-line span {
+  outline: none;
+}
+
+/* Sender Message Line */
+.sender-message-line {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-align: center;
+  padding: 0 10px;
+}
+.theme-color .sender-message-line {
+  color: #240a02;
+}
+.theme-bw .sender-message-line {
+  color: #000000;
+}
+.sender-message-line span {
+  outline: none;
+}
+
+/* Deceased Name Main Row */
+.deceased-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 4px 0;
+}
+
+.deceased-name-main {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+  outline: none;
+}
+.theme-color .deceased-name-main {
+  color: #b01818;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+}
+.theme-bw .deceased-name-main {
+  color: #000000;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.deceased-residence {
+  font-size: 20px;
+  font-weight: 700;
+  outline: none;
+}
+.theme-color .deceased-residence {
+  color: #2b1104;
+}
+.theme-bw .deceased-residence {
+  color: #000000;
+}
+
+/* Ornamental Divider */
+.ornamental-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 2px 0;
+}
+
+.divider-line {
+  height: 1px;
+  flex: 1;
+}
+.theme-color .divider-line {
+  background: linear-gradient(90deg, transparent, #b87b1c, transparent);
+}
+.theme-bw .divider-line {
+  background: #000000;
+}
+
+.divider-flourish {
+  font-size: 13px;
+  letter-spacing: 4px;
+}
+.theme-color .divider-flourish {
+  color: #9c6a1e;
+}
+.theme-bw .divider-flourish {
+  color: #000000;
+}
+
+/* Main Announcement Paragraph */
+.announcement-paragraph {
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 600;
+  text-align: justify;
+  text-justify: inter-word;
+  padding: 0 4px;
+}
+
+.theme-color .announcement-paragraph {
+  color: #1f0b01;
+}
+.theme-bw .announcement-paragraph {
+  color: #000000;
+}
+
+.highlight-date {
+  font-weight: 800;
+}
+.theme-color .highlight-date {
+  color: #0c1a40;
+}
+.theme-bw .highlight-date {
+  font-weight: 800;
+  color: #000000;
+}
+
+.highlight-word {
+  font-weight: 800;
+}
+.theme-color .highlight-word {
+  color: #1e3a8a;
+}
+.theme-bw .highlight-word {
+  font-weight: 800;
+  color: #000000;
+}
+
+.highlight-ritual-title {
+  font-weight: 900;
+  font-size: 17px;
+}
+.theme-color .highlight-ritual-title {
+  color: #b01818;
+}
+.theme-bw .highlight-ritual-title {
+  color: #000000;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   SHOKAKUL SECTION (शोकाकुल Box)
+   ========================================================================== */
+.shokakul-box {
+  margin-top: 6px;
+  border-radius: 10px;
+  padding: 6px 14px 8px;
+  position: relative;
+}
+
+.theme-color .shokakul-box {
+  background: linear-gradient(180deg, #fff7fb 0%, #faf0f8 100%);
+  border: 1.5px solid #d89be6;
+  box-shadow: inset 0 0 10px rgba(180, 50, 180, 0.05);
+}
+
+.theme-bw .shokakul-box {
+  background: #ffffff;
+  border: 2px solid #000000;
+}
+
+.shokakul-header-bar {
+  text-align: center;
+  margin-top: -16px;
+  margin-bottom: 4px;
+}
+
+.shokakul-title {
+  display: inline-block;
+  padding: 3px 28px;
+  border-radius: 20px;
+  font-size: 17px;
+  font-weight: 800;
+  outline: none;
+}
+
+.theme-color .shokakul-title {
+  background: linear-gradient(180deg, #4d0a6e 0%, #250239 100%);
+  border: 1px solid #ffd700;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.theme-bw .shokakul-title {
+  background: #000000;
+  border: 1px solid #000000;
+  color: #ffffff;
+}
+
+.shokakul-content-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.side-flower {
+  font-size: 20px;
+  opacity: 0.85;
+}
+.theme-bw .side-flower {
+  filter: grayscale(100%);
+}
+
+.shokakul-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+  row-gap: 4px;
+}
+
+.shokakul-entry {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  outline: none;
+}
+
+.theme-color .shokakul-entry {
+  color: #2a0e02;
+}
+.theme-bw .shokakul-entry {
+  color: #000000;
+}
+
+.bullet-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.theme-color .bullet-dot {
+  background: #b01818;
+}
+.theme-bw .bullet-dot {
+  background: #000000;
+}
+
+.shokakul-footer-bar {
+  text-align: center;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(0,0,0,0.15);
+}
+
+.theme-bw .shokakul-footer-bar {
+  background: #000000;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 4px;
+  border-top: none;
+}
+
+.shokakul-footer-bar span {
+  font-size: 17px;
+  font-weight: 800;
+  outline: none;
+}
+
+.theme-color .shokakul-footer-bar span {
+  color: #b01818;
+}
+.theme-bw .shokakul-footer-bar span {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   PRINT MEDIA STYLES
+   ========================================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  .app-header,
+  .editor-panel,
+  .preview-toolbar {
+    display: none !important;
+  }
+  .main-layout {
+    height: auto !important;
+    display: block !important;
+  }
+  .preview-area {
+    background: #ffffff !important;
+    padding: 0 !important;
+  }
+  .preview-viewport {
+    padding: 0 !important;
+    display: block !important;
+  }
+  .card-scaler {
+    transform: none !important;
+  }
+  .shok-card {
+    box-shadow: none !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Tablets / Laptops)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .main-layout {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .editor-panel {
+    width: 100%;
+    height: auto;
+    max-height: 550px;
+    border-right: none;
+    border-bottom: 2px solid var(--border-color);
+  }
+  .preview-area {
+    min-height: 700px;
+  }
+}

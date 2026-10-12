@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>शोक संदेश पत्रिका संपादक | Shok Sandesh Card Maker</title>
+  <!-- Google Fonts for Marathi Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gotu&family=Modak&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700;900&family=Rozha+One&family=Tiro+Devanagari+Marathi:ital@0;1&family=Yatra+One&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas for instant image download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header App Bar -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-scroll"></i>
+      </div>
+      <div>
+        <h1>शोक संदेश पत्रिका निर्माता</h1>
+        <p class="subtitle">Condolence & Remembrance Card Generator (मराठी)</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- Card Size / Aspect Ratio Selector -->
+      <div class="card-size-selector">
+        <label for="selectCardSize"><i class="fa-solid fa-expand"></i> आकार:</label>
+        <select id="selectCardSize" onchange="changeCardSize(this.value)">
+          <option value="landscape" selected>🖥️ लँडस्केप (1000 × 640)</option>
+          <option value="portrait">📱 उभी / स्टेटस (720 × 980)</option>
+          <option value="square">🔲 चौरस (850 × 850)</option>
+          <option value="a4">📄 A4 प्रिंट (1120 × 790)</option>
+        </select>
+      </div>
+
+      <!-- Card Theme Dropdown Selector -->
+      <div class="card-size-selector">
+        <label for="selectCardTheme"><i class="fa-solid fa-palette"></i> थीम:</label>
+        <select id="selectCardTheme" onchange="setCardTheme(this.value)">
+          <option value="royal-gold" selected>👑 १. सुवर्ण राजेशाही (Royal Gold)</option>
+          <option value="bw">📰 २. कृष्णधवल प्रिंट (Classic B&W)</option>
+          <option value="white-serene">🕊️ ३. सात्विक श्वेत (Pure White)</option>
+          <option value="saffron">🚩 ४. भगवा / केशर (Spiritual Saffron)</option>
+          <option value="vintage-parchment">📜 ५. विंटेज चर्मपत्र (Parchment)</option>
+          <option value="navy-gold">💎 ६. राजेशाही निळसर (Navy & Gold)</option>
+          <option value="pink-lotus">🌸 ७. गुलाबी कमळ (Pink Lotus)</option>
+          <option value="emerald-chandan">🌿 ८. गोदावरी चंदन-हिरवा (Emerald)</option>
+          <option value="midnight-gold">🌑 ९. मध्यरात्री काळा-सोनेरी (Midnight 24K)</option>
+          <option value="ganga-moksha">🪔 १०. काशी-गंगा मोक्षधाम (Ganga Silver)</option>
+          <option value="terracotta-autumn">🍂 ११. पानगळ तपोवन (Autumn Bronze)</option>
+          <option value="rudraksha-maroon">🕉️ १२. कैलास रुद्राक्ष (Rudraksha Maroon)</option>
+        </select>
+      </div>
+
+      <!-- Border Style Dropdown Selector -->
+      <div class="card-size-selector">
+        <label for="selectBorderStyle"><i class="fa-solid fa-border-all"></i> डिझाईन:</label>
+        <select id="selectBorderStyle" onchange="setBorderDesign(this.value)">
+          <option value="royal-filigree" selected>⚜️ राजेशाही नक्षी</option>
+          <option value="vintage-floral">🌸 विंटेज फ्लोरल</option>
+          <option value="double-classic">🏛️ डबल क्लासिक</option>
+          <option value="minimal">✨ साधी आधुनिक</option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <button class="action-btn btn-secondary" onclick="resetToSample()">
+        <i class="fa-solid fa-rotate-left"></i> नमुना (Sample)
+      </button>
+      <button class="action-btn btn-secondary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> प्रिंट (Print)
+      </button>
+      <button class="action-btn btn-primary" id="btnDownload" onclick="downloadCard()">
+        <i class="fa-solid fa-cloud-arrow-down"></i> फोटो डाउनलोड (PNG)
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container: Split Screen Editor (Left) & Live Preview (Right) -->
+  <div class="main-layout">
+    
+    <!-- LEFT SIDE: Editor Panel -->
+    <aside class="editor-panel" id="editorPanel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>माहिती भरा / संपादन (Edit Details)</span>
+        </div>
+        <span class="badge-hint">थेट उजवीकडे कार्डवरही बदल करता येईल</span>
+      </div>
+
+      <div class="accordion-container">
+        <!-- 1. Header Information -->
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-heading"></i> मुख्य शीर्षक व तारीख</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="input-grid-2">
+              <div class="form-group">
+                <label>शीर्षक (Main Banner):</label>
+                <input type="text" id="in_banner_title" value="शोक संदेश" oninput="updateCard()">
+              </div>
+              <div class="form-group">
+                <label>तारीख (Date top right):</label>
+                <input type="text" id="in_date_top" value="दि. ०२/०९/२०२६" oninput="updateCard()">
+              </div>
+            </div>
+            <div class="input-grid-2">
+              <div class="form-group">
+                <label>डावे गाव / नाव (Top Left):</label>
+                <input type="text" id="in_village_top" value="लासुर" oninput="updateCard()">
+              </div>
+              <div class="form-group">
+                <label>मंत्र / शांती संदेश:</label>
+                <input type="text" id="in_om_shanti" value="ओम: शांती शांती.." oninput="updateCard()">
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 2. Photo & Adjustments Section -->
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-image"></i> दिवंगत व्यक्तीचा फोटो अ‍ॅडजस्टमेंट</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <!-- Photo Upload Dropzone -->
+            <div class="form-group">
+              <label>फोटो निवडा (Upload Photo):</label>
+              <div class="file-drop-zone" onclick="document.getElementById('in_photo_file').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>नवीन फोटो बदलण्यासाठी येथे क्लिक करा</span>
+                <small>(JPG / PNG / WebP सपोर्ट)</small>
+                <input type="file" id="in_photo_file" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+              </div>
+            </div>
+
+            <!-- Photo Position & Zoom Adjuster Box -->
+            <div class="photo-controls-box">
+              <div class="control-box-header">
+                <span><i class="fa-solid fa-sliders"></i> फोटो अ‍ॅडजस्ट करा (Photo Adjuster)</span>
+                <button type="button" class="btn-micro" onclick="resetPhotoAdjustments()" title="मूळ स्थितीत आणा">
+                  <i class="fa-solid fa-rotate-left"></i> रिसेट
+                </button>
+              </div>
+
+              <!-- Zoom Slider -->
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label><i class="fa-solid fa-magnifying-glass-plus"></i> फोटो झूम (Zoom):</label>
+                  <span id="val_photo_scale">100%</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="adjustPhotoZoom(-10)">-</button>
+                  <input type="range" id="in_photo_scale" min="50" max="250" value="100" oninput="setPhotoScale(this.value)">
+                  <button type="button" class="step-btn" onclick="adjustPhotoZoom(10)">+</button>
+                </div>
+              </div>
+
+              <!-- Position X & Y -->
+              <div class="input-grid-2">
+                <div class="form-group">
+                  <div class="label-with-value">
+                    <label><i class="fa-solid fa-arrows-left-right"></i> डावे/उजवे (X):</label>
+                    <span id="val_photo_x">0px</span>
+                  </div>
+                  <input type="range" id="in_photo_x" min="-120" max="120" value="0" oninput="setPhotoX(this.value)">
+                </div>
+                <div class="form-group">
+                  <div class="label-with-value">
+                    <label><i class="fa-solid fa-arrows-up-down"></i> वर/खाली (Y):</label>
+                    <span id="val_photo_y">0px</span>
+                  </div>
+                  <input type="range" id="in_photo_y" min="-120" max="120" value="0" oninput="setPhotoY(this.value)">
+                </div>
+              </div>
+
+              <!-- Rotate Buttons -->
+              <div class="form-group">
+                <label><i class="fa-solid fa-rotate"></i> फोटो फिरवा (Rotate):</label>
+                <div class="rotate-btn-group">
+                  <button type="button" class="rot-btn" onclick="rotatePhoto(-90)"><i class="fa-solid fa-rotate-left"></i> -90°</button>
+                  <button type="button" class="rot-btn" onclick="setPhotoRotate(0)">0° (सरळ)</button>
+                  <button type="button" class="rot-btn" onclick="rotatePhoto(90)"><i class="fa-solid fa-rotate-right"></i> +90°</button>
+                  <button type="button" class="rot-btn" onclick="rotatePhoto(180)">180°</button>
+                </div>
+              </div>
+
+              <!-- Frame Shape & Filter -->
+              <div class="input-grid-2">
+                <div class="form-group">
+                  <label><i class="fa-solid fa-crop"></i> फ्रेम आकार (Shape):</label>
+                  <select id="in_frame_shape" onchange="setFrameShape(this.value)">
+                    <option value="arch" selected>🏛️ कमान / घुमट (Arch)</option>
+                    <option value="oval">⭕ लंबगोल (Oval)</option>
+                    <option value="rounded">🔲 गोलाकार (Rounded)</option>
+                    <option value="rect">⬛ चौकोन (Sharp)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><i class="fa-solid fa-wand-magic-sparkles"></i> फोटो रंग (Filter):</label>
+                  <select id="in_photo_filter" onchange="setPhotoFilter(this.value)">
+                    <option value="none" selected>मूळ रंग (Color)</option>
+                    <option value="grayscale">कृष्णधवल (B & W)</option>
+                    <option value="bright">जास्त प्रकाश (Bright)</option>
+                    <option value="sepia">सेपिया (Sepia)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Garland Toggle -->
+              <div class="checkbox-row">
+                <input type="checkbox" id="in_show_garland" checked onchange="toggleGarland(this.checked)">
+                <label for="in_show_garland">🌸 फुलांचा हार दाखवा (Show Flower Garland)</label>
+              </div>
+
+              <!-- Drag Hint -->
+              <div class="drag-hint-box">
+                <i class="fa-solid fa-hand-pointer"></i> <span>टीप: उजवीकडील फोटोवर माऊसने क्लिक करून सरकवून (Drag) देखील चेहरा सेट करू शकता!</span>
+              </div>
+            </div>
+
+            <!-- Venue Details inside same tab -->
+            <div class="venue-settings" style="margin-top: 14px;">
+              <h4>कार्यस्थळ माहिती (Venue Left Box):</h4>
+              <div class="form-group">
+                <label>गाव (Village):</label>
+                <input type="text" id="in_venue_village" value="लासुर" oninput="updateCard()">
+              </div>
+              <div class="input-grid-2">
+                <div class="form-group">
+                  <label>तालुका (Taluka):</label>
+                  <input type="text" id="in_venue_taluka" value="तालुका चोपडा" oninput="updateCard()">
+                </div>
+                <div class="form-group">
+                  <label>जिल्हा (District):</label>
+                  <input type="text" id="in_venue_district" value="जिल्हा जळगाव" oninput="updateCard()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 3. Deceased & Sender Details -->
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-user"></i> व्यक्ती व निधनाची सविस्तर माहिती</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="form-group">
+              <label>प्रातिनिधिक ओळ (श्री.रा.रा. .... यांना):</label>
+              <input type="text" id="in_shrirara" value="श्री.रा. रा. ________________________ यांना" oninput="updateCard()">
+            </div>
+            <div class="form-group">
+              <label>कळविणारे (Sender Names & Relation):</label>
+              <textarea id="in_sender_line" rows="2" oninput="updateCard()">श्री.वासुदेव नारायण माळी व भगवान नारायण माळी यांच्या कडून कळविण्यास अत्यंत दुःख होते की, यांचे वडील नामे:</textarea>
+            </div>
+            
+            <div class="input-grid-2">
+              <div class="form-group">
+                <label>दिवंगत व्यक्तीचे नाव (Deceased Name):</label>
+                <input type="text" class="highlight-input" id="in_deceased_name" value="कै.नारायण उखा माळी" oninput="updateCard()">
+              </div>
+              <div class="form-group">
+                <label>गाव / मूळ पत्ता (Residence):</label>
+                <input type="text" id="in_deceased_residence" value="रा. लासुर यांचे" oninput="updateCard()">
+              </div>
+            </div>
+
+            <div class="input-grid-3">
+              <div class="form-group">
+                <label>निधन तारीख:</label>
+                <input type="text" id="in_death_date" value="दि.०२/०९/२०२६" oninput="updateCard()">
+              </div>
+              <div class="form-group">
+                <label>वार:</label>
+                <input type="text" id="in_death_day" value="बुधवार" oninput="updateCard()">
+              </div>
+              <div class="form-group">
+                <label>वेळ:</label>
+                <input type="text" id="in_death_time" value="सायंकाळी ६ : ३० वाजता" oninput="updateCard()">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>वय (Age):</label>
+              <input type="text" id="in_deceased_age" value="वयाच्या ८६ व्या वर्षी" oninput="updateCard()">
+            </div>
+          </div>
+        </details>
+
+        <!-- 4. Rituals (विधी कार्यक्रम) -->
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-calendar-check"></i> विधी व उत्तर कार्य कार्यक्रम</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="form-group">
+              <label>दशक्रिया विधी तारीख व वार:</label>
+              <input type="text" id="in_dashkriya_info" value="दि. ११/०९/२०२६ वार शुक्रवार रोजी" oninput="updateCard()">
+            </div>
+            <div class="form-group">
+              <label>उत्तर कार्य / गंधमुक्ती तारीख व वार:</label>
+              <input type="text" id="in_uttarkarya_info" value="दि. १२/०९/२०२६ वार शनिवार रोजी सकाळी ११ वाजता" oninput="updateCard()">
+            </div>
+            <div class="form-group">
+              <label>विधी स्थळ (Rituals Venue):</label>
+              <input type="text" id="in_rituals_place" value="माळी समाज मंगल कार्यालय येथे करण्याचे योजिले आहे." oninput="updateCard()">
+            </div>
+          </div>
+        </details>
+
+        <!-- 5. Shokakul (शोकाकुल) -->
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-users"></i> शोकाकुल व परिवार यादी</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="form-group">
+              <label>शोकाकुल शीर्षक:</label>
+              <input type="text" id="in_shokakul_title" value="शोकाकुल" oninput="updateCard()">
+            </div>
+
+            <label>नावे (प्रत्येक ओळीत एक नाव भरा):</label>
+            <div id="shokakulNamesContainer" class="shokakul-list">
+              <!-- Dynamically populated or editable -->
+            </div>
+            <button type="button" class="btn-add-name" onclick="addShokakulField('')">
+              <i class="fa-solid fa-plus"></i> अजून नाव जोडा (Add Name)
+            </button>
+
+            <div class="form-group" style="margin-top: 15px;">
+              <label>समस्त परिवार तळटीप (Family Footer):</label>
+              <input type="text" class="highlight-input" id="in_family_footer" value="समस्त पवार परिवार लासुर" oninput="updateCard()">
+            </div>
+          </div>
+        </details>
+
+        <!-- 6. Font & Typography Settings -->
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-font"></i> फॉन्ट व आकार सेटिंग्ज</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="form-group">
+              <label>मराठी फॉन्ट निवडा (Font Family):</label>
+              <select id="in_font_family" onchange="changeFontFamily(this.value)">
+                <option value="'Noto Serif Devanagari', serif" selected>Noto Serif Devanagari (क्लासिक पारंपारिक)</option>
+                <option value="'Yatra One', cursive">Yatra One (ठळक व आकर्षक)</option>
+                <option value="'Tiro Devanagari Marathi', serif">Tiro Devanagari Marathi (वर्तमानपत्र शैली)</option>
+                <option value="'Noto Sans Devanagari', sans-serif">Noto Sans Devanagari (मॉडर्न व स्पष्ट)</option>
+                <option value="'Rozha One', serif">Rozha One (सुंदर हेडलाइन)</option>
+              </select>
+            </div>
+            <div class="input-grid-2">
+              <div class="form-group">
+                <label>नाव फॉन्ट आकार (Deceased Size):</label>
+                <input type="range" id="in_name_size" min="20" max="38" value="28" oninput="changeNameSize(this.value)">
+              </div>
+              <div class="form-group">
+                <label>मजकूर फॉन्ट आकार (Body Size):</label>
+                <input type="range" id="in_body_size" min="12" max="22" value="16" oninput="changeBodySize(this.value)">
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 7. Theme & Realistic Styling Section -->
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span><i class="fa-solid fa-wand-magic-sparkles"></i> थीम, डिझाईन व रिअ‍ॅलिस्टिक इफेक्ट्स</span>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="form-group">
+              <label>थीम निवडा (Visual Theme Palettes):</label>
+              <div class="theme-palette-grid">
+                <button type="button" class="theme-swatch active" onclick="setCardTheme('royal-gold')" id="swatch_royal-gold">
+                  <span class="swatch-preview theme-swatch-gold"></span>
+                  <span class="swatch-label">१. सुवर्ण राजेशाही</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('bw')" id="swatch_bw">
+                  <span class="swatch-preview theme-swatch-bw"></span>
+                  <span class="swatch-label">२. कृष्णधवल प्रिंट</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('white-serene')" id="swatch_white-serene">
+                  <span class="swatch-preview theme-swatch-white"></span>
+                  <span class="swatch-label">३. सात्विक श्वेत</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('saffron')" id="swatch_saffron">
+                  <span class="swatch-preview theme-swatch-saffron"></span>
+                  <span class="swatch-label">४. भगवा / केशर</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('vintage-parchment')" id="swatch_vintage-parchment">
+                  <span class="swatch-preview theme-swatch-parchment"></span>
+                  <span class="swatch-label">५. विंटेज चर्मपत्र</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('navy-gold')" id="swatch_navy-gold">
+                  <span class="swatch-preview theme-swatch-navy"></span>
+                  <span class="swatch-label">६. राजेशाही निळसर</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('pink-lotus')" id="swatch_pink-lotus">
+                  <span class="swatch-preview theme-swatch-lotus"></span>
+                  <span class="swatch-label">७. गुलाबी कमळ</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('emerald-chandan')" id="swatch_emerald-chandan">
+                  <span class="swatch-preview theme-swatch-emerald"></span>
+                  <span class="swatch-label">८. गोदावरी हिरवा</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('midnight-gold')" id="swatch_midnight-gold">
+                  <span class="swatch-preview theme-swatch-midnight"></span>
+                  <span class="swatch-label">९. मध्यरात्री सोनेरी</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('ganga-moksha')" id="swatch_ganga-moksha">
+                  <span class="swatch-preview theme-swatch-ganga"></span>
+                  <span class="swatch-label">१०. काशी मोक्षधाम</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('terracotta-autumn')" id="swatch_terracotta-autumn">
+                  <span class="swatch-preview theme-swatch-autumn"></span>
+                  <span class="swatch-label">११. पानगळ तपोवन</span>
+                </button>
+                <button type="button" class="theme-swatch" onclick="setCardTheme('rudraksha-maroon')" id="swatch_rudraksha-maroon">
+                  <span class="swatch-preview theme-swatch-rudraksha"></span>
+                  <span class="swatch-label">१२. कैलास रुद्राक्ष</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="input-grid-2">
+              <div class="form-group">
+                <label>बॉर्डर डिझाईन (Border Style):</label>
+                <select id="in_border_style" onchange="setBorderDesign(this.value)">
+                  <option value="royal-filigree" selected>⚜️ राजेशाही नक्षी (Filigree)</option>
+                  <option value="vintage-floral">🌸 विंटेज फ्लोरल (Floral)</option>
+                  <option value="double-classic">🏛️ डबल क्लासिक (Classic)</option>
+                  <option value="minimal">✨ साधी आधुनिक (Minimal)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>रिअ‍ॅलिस्टिक टेक्सचर (Paper Texture):</label>
+                <select id="in_paper_texture" onchange="setPaperTexture(this.value)">
+                  <option value="subtle" selected>📜 रिअ‍ॅलिस्टिक पेपर (Parchment)</option>
+                  <option value="canvas">🎨 कॅनव्हास टेक्सचर (Canvas)</option>
+                  <option value="smooth">✨ गुळगुळीत / स्मूथ (Smooth Clean)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="checkbox-row">
+              <input type="checkbox" id="in_diya_glow" checked onchange="toggleDiyaGlow(this.checked)">
+              <label for="in_diya_glow">🔥 पणतीचा प्रकाश व चमक (Realistic Diya Glow)</label>
+            </div>
+            <div class="checkbox-row">
+              <input type="checkbox" id="in_card_3d_shadow" checked onchange="toggleCard3DShadow(this.checked)">
+              <label for="in_card_3d_shadow">🌟 ३D कार्ड डेप्थ व वास्तववादी शेड (Realistic 3D Depth)</label>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </aside>
+
+    <!-- RIGHT SIDE: Live Preview Card Display -->
+    <main class="preview-area">
+      <!-- Toolbar over card -->
+      <div class="preview-toolbar">
+        <div class="zoom-controls">
+          <button class="tool-btn" onclick="zoomCard(-0.05)" title="लहान करा"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+          <span id="zoomLevelText">100%</span>
+          <button class="tool-btn" onclick="zoomCard(0.05)" title="मोठे करा"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+          <button class="tool-btn" onclick="resetZoom()" title="मूळ आकार"><i class="fa-solid fa-expand"></i> 100%</button>
+        </div>
+        <div class="edit-hint-chip">
+          <i class="fa-solid fa-lightbulb"></i> मजकुरावर थेट क्लिक करूनही (Click to edit) एडिट करू शकता
+        </div>
+      </div>
+
+      <!-- Preview Canvas Wrapper with Scale -->
+      <div class="preview-viewport" id="previewViewport">
+        <div class="card-scaler" id="cardScaler">
+
+          <!-- ==================== THE INVITATION / CONDOLENCE CARD ==================== -->
+          <div class="shok-card theme-royal-gold border-royal-filigree size-landscape realistic-depth" id="shokCard">
+
+            <!-- Realistic Paper Texture Overlay -->
+            <div class="card-texture-overlay texture-subtle" id="cardTextureOverlay"></div>
+
+            <!-- 1. Authentic Ornate Border Frames & Corner Ornaments (SVG) -->
+            <div class="card-ornament-corners">
+              <svg class="corner corner-tl" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 C70,10 60,30 55,55 C45,25 25,25 0,25 Z M15,15 C25,25 35,45 35,70 C25,50 10,40 0,35 Z M0,0 L0,100 C10,70 30,60 55,55 C25,45 25,25 25,0 Z" class="ornament-fill" />
+                <circle cx="12" cy="12" r="6" class="ornament-fill" />
+                <path d="M2,2 L98,2 C80,15 80,30 70,50 C50,20 20,20 2,2 Z" class="ornament-accent" opacity="0.7"/>
+              </svg>
+              <svg class="corner corner-tr" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 C70,10 60,30 55,55 C45,25 25,25 0,25 Z M15,15 C25,25 35,45 35,70 C25,50 10,40 0,35 Z M0,0 L0,100 C10,70 30,60 55,55 C25,45 25,25 25,0 Z" class="ornament-fill" />
+                <circle cx="12" cy="12" r="6" class="ornament-fill" />
+              </svg>
+              <svg class="corner corner-bl" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 C70,10 60,30 55,55 C45,25 25,25 0,25 Z M15,15 C25,25 35,45 35,70 C25,50 10,40 0,35 Z M0,0 L0,100 C10,70 30,60 55,55 C25,45 25,25 25,0 Z" class="ornament-fill" />
+                <circle cx="12" cy="12" r="6" class="ornament-fill" />
+              </svg>
+              <svg class="corner corner-br" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 C70,10 60,30 55,55 C45,25 25,25 0,25 Z M15,15 C25,25 35,45 35,70 C25,50 10,40 0,35 Z M0,0 L0,100 C10,70 30,60 55,55 C25,45 25,25 25,0 Z" class="ornament-fill" />
+                <circle cx="12" cy="12" r="6" class="ornament-fill" />
+              </svg>
+            </div>
+
+            <!-- Double Inner Border -->
+            <div class="card-inner-frame"></div>
+
+            <!-- Card Content Layout -->
+            <div class="card-inner-content">
+
+              <!-- ================= TOP HEADER BAR ================= -->
+              <div class="card-header-row">
+                <!-- Top Left: Village & Shanti Mantra -->
+                <div class="header-col-left">
+                  <div class="top-village-badge" contenteditable="true" id="card_village_top">लासुर</div>
+                  <div class="top-om-shanti" contenteditable="true" id="card_om_shanti">ओम: शांती शांती..</div>
+                </div>
+
+                <!-- Top Center: Royal Ribbon / Pill "शोक संदेश" -->
+                <div class="header-col-center">
+                  <div class="title-ribbon-container">
+                    <div class="flourish-wing flourish-left">
+                      <svg viewBox="0 0 50 25" class="wing-svg">
+                        <path d="M50,12 C35,2 15,3 0,12 C15,22 35,23 50,12 Z M25,12 C20,7 10,7 5,12 C10,17 20,17 25,12 Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <div class="shok-sandesh-badge">
+                      <span contenteditable="true" id="card_banner_title">शोक संदेश</span>
+                    </div>
+                    <div class="flourish-wing flourish-right">
+                      <svg viewBox="0 0 50 25" class="wing-svg">
+                        <path d="M0,12 C15,2 35,3 50,12 C35,22 15,23 0,12 Z M25,12 C30,7 40,7 45,12 C40,17 30,17 25,12 Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Top Right: Date Badge -->
+                <div class="header-col-right">
+                  <div class="top-date-box">
+                    <span contenteditable="true" id="card_date_top">दि. ०२/०९/२०२६</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ================= MAIN BODY SPLIT (PHOTO on Left + TEXT on Right) ================= -->
+              <div class="card-body-row">
+
+                <!-- LEFT COLUMN: Photo Frame + Venue Box -->
+                <div class="card-left-col">
+                  
+                  <!-- Photo Frame with Garland -->
+                  <div class="photo-frame-wrapper">
+                    <div class="ornate-photo-frame shape-arch" id="card_photo_frame">
+                      <div class="photo-inner" id="card_photo_container">
+                        <img id="card_photo_img" src="sample_photo.jpg" alt="दिवंगत व्यक्तीचा फोटो" draggable="false">
+                      </div>
+                    </div>
+                    <!-- Decorative Flower Garland / हार at bottom of frame -->
+                    <div class="photo-garland" id="card_photo_garland">
+                      <div class="garland-flower-center">🌸</div>
+                      <div class="garland-leaves-left">🍃🌺</div>
+                      <div class="garland-leaves-right">🌺🍃</div>
+                    </div>
+                  </div>
+
+                  <!-- Venue Box / कार्यस्थळ with Traditional Diyas -->
+                  <div class="venue-card-box">
+                    <div class="venue-badge">
+                      <span>कार्यस्थळ</span>
+                    </div>
+                    <div class="venue-content-with-diyas">
+                      <!-- Left Diya -->
+                      <div class="diya-wrapper left-diya">
+                        <div class="diya-flame"></div>
+                        <div class="diya-pot"></div>
+                      </div>
+
+                      <!-- Address Text -->
+                      <div class="venue-details">
+                        <div class="venue-line village-name" contenteditable="true" id="card_venue_village">लासुर</div>
+                        <div class="venue-line" contenteditable="true" id="card_venue_taluka">तालुका चोपडा</div>
+                        <div class="venue-line" contenteditable="true" id="card_venue_district">जिल्हा जळगाव</div>
+                      </div>
+
+                      <!-- Right Diya -->
+                      <div class="diya-wrapper right-diya">
+                        <div class="diya-flame"></div>
+                        <div class="diya-pot"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: Message, Deceased Name, Details & Shokakul -->
+                <div class="card-right-col">
+
+                  <!-- 1. Salutation line (श्री.रा. रा. _______________ यांना) -->
+                  <div class="recipient-line">
+                    <span contenteditable="true" id="card_shrirara">श्री.रा. रा. __________________________________ यांना</span>
+                  </div>
+
+                  <!-- 2. Sender note -->
+                  <div class="sender-message-line">
+                    <span contenteditable="true" id="card_sender_line">
+                      श्री.वासुदेव नारायण माळी व भगवान नारायण माळी यांच्या कडून कळविण्यास अत्यंत दुःख होते की, यांचे वडील नामे:
+                    </span>
+                  </div>
+
+                  <!-- 3. Deceased Person Name (Huge prominent title) -->
+                  <div class="deceased-name-row">
+                    <div class="deceased-name-main" contenteditable="true" id="card_deceased_name">
+                      कै.नारायण उखा माळी .
+                    </div>
+                    <div class="deceased-residence" contenteditable="true" id="card_deceased_residence">
+                      रा. लासुर यांचे
+                    </div>
+                  </div>
+
+                  <!-- Ornamental Divider (Floral motif) -->
+                  <div class="ornamental-divider">
+                    <span class="divider-line"></span>
+                    <span class="divider-flourish">❖ ❖ ❖</span>
+                    <span class="divider-line"></span>
+                  </div>
+
+                  <!-- 4. Death announcement & rituals text -->
+                  <div class="announcement-paragraph" id="card_announcement_box">
+                    आज <span class="highlight-date" id="card_death_date">दि.०२/०९/२०२६</span> वार <span class="highlight-word" id="card_death_day">बुधवार</span> रोजी <span id="card_death_time">सायंकाळी ६ : ३० वाजता</span> <span id="card_deceased_age">वयाच्या ८६ व्या वर्षी</span> दुःखद निधन झाले तरी त्यांच्या <span class="highlight-ritual-title">दशक्रिया विधी:</span> <span class="highlight-date" id="card_dashkriya_info">दि. ११/०९/२०२६ वार शुक्रवार रोजी</span> व <span class="highlight-ritual-title">गंध मुक्ती उत्तर कार्याची नेम:</span> <span class="highlight-date" id="card_uttarkarya_info">दि. १२/०९/२०२६ वार शनिवार रोजी सकाळी ११ वाजता</span> <span id="card_rituals_place">माळी समाज मंगल कार्यालय येथे करण्याचे योजिले आहे.</span>
+                  </div>
+
+                  <!-- 5. Shokakul Section (Bottom right box) -->
+                  <div class="shokakul-box">
+                    <div class="shokakul-header-bar">
+                      <span class="shokakul-title" contenteditable="true" id="card_shokakul_title">शोकाकुल</span>
+                    </div>
+                    
+                    <div class="shokakul-content-container">
+                      <!-- Left Flower sprig -->
+                      <div class="side-flower side-flower-left">
+                        <span class="flower-icon">🌸</span>
+                      </div>
+
+                      <!-- 2-Column Name Grid -->
+                      <div class="shokakul-grid" id="card_shokakul_grid">
+                        <!-- Populated by JS -->
+                      </div>
+
+                      <!-- Right Flower sprig -->
+                      <div class="side-flower side-flower-right">
+                        <span class="flower-icon">🌸</span>
+                      </div>
+                    </div>
+
+                    <!-- Footer Family Line -->
+                    <div class="shokakul-footer-bar">
+                      <span contenteditable="true" id="card_family_footer">समस्त पवार परिवार लासुर</span>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <!-- ==================== END OF CARD ==================== -->
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
