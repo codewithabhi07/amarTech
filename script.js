@@ -1207,7 +1207,7 @@ function saveDraftToLocalStorage() {
       fontSizeShokakulNames: getValue("in_size_shokakul_names"),
       fontSizeFamilyFooter: getValue("in_size_family_footer"),
       fontSizeStudio: getValue("in_size_studio"),
-      hideCutBadges,
+      hideCutMarkers,
       hideCutLines
     };
     localStorage.setItem("shok_sandesh_draft", JSON.stringify(draft));
@@ -1406,8 +1406,10 @@ function loadDraftFromLocalStorage() {
       }
     });
 
-    if (draft.hideCutBadges !== undefined) {
-      toggleCutBadges(draft.hideCutBadges);
+    if (draft.hideCutMarkers !== undefined) {
+      toggleCutMarkers(draft.hideCutMarkers);
+    } else if (draft.hideCutBadges !== undefined) {
+      toggleCutMarkers(draft.hideCutBadges);
     }
     if (draft.hideCutLines !== undefined) {
       toggleCutLines(draft.hideCutLines);
