@@ -34,7 +34,8 @@
           <option value="landscape" selected>🖥️ लँडस्केप (1000 × 640)</option>
           <option value="portrait">📱 उभी / स्टेटस (720 × 980)</option>
           <option value="square">🔲 चौरस (850 × 850)</option>
-          <option value="a4">📄 A4 प्रिंट (1120 × 790)</option>
+          <option value="a4">📄 A4 - १ प्रत (1120 × 790)</option>
+          <option value="a4-4up">✂️ A4 वर ४ प्रती (4 Copies with Cut Lines)</option>
         </select>
       </div>
 
@@ -69,11 +70,17 @@
       </div>
 
       <!-- Action Buttons -->
+      <button class="action-btn btn-4up" id="btn4UpToggle" onclick="toggle4UpSheetMode()" title="एका A4 पानावर ४ प्रती कटिंग मार्जिनसह दाखवा / प्रिंट करा">
+        <i class="fa-solid fa-scissors"></i> A4 वर ४ प्रती
+      </button>
+      <button class="action-btn btn-whatsapp" onclick="shareOnWhatsApp()" title="व्हॉट्सॲपवर पाठवा">
+        <i class="fa-brands fa-whatsapp"></i> व्हॉट्सॲप
+      </button>
       <button class="action-btn btn-secondary" onclick="resetToSample()">
-        <i class="fa-solid fa-rotate-left"></i> नमुना (Sample)
+        <i class="fa-solid fa-rotate-left"></i> नमुना
       </button>
       <button class="action-btn btn-secondary" onclick="window.print()">
-        <i class="fa-solid fa-print"></i> प्रिंट (Print)
+        <i class="fa-solid fa-print"></i> प्रिंट
       </button>
       <button class="action-btn btn-primary" id="btnDownload" onclick="downloadCard()">
         <i class="fa-solid fa-cloud-arrow-down"></i> फोटो डाउनलोड (PNG)
@@ -87,11 +94,37 @@
     <!-- LEFT SIDE: Editor Panel -->
     <aside class="editor-panel" id="editorPanel">
       <div class="panel-header">
-        <div class="panel-title">
-          <i class="fa-solid fa-pen-to-square"></i>
-          <span>माहिती भरा / संपादन (Edit Details)</span>
+        <div class="panel-title-row">
+          <div class="panel-title">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>माहिती भरा / संपादन</span>
+          </div>
+          <span class="auto-save-tag" id="autoSaveTag"><i class="fa-solid fa-check"></i> सेव्ह झाले</span>
         </div>
         <span class="badge-hint">थेट उजवीकडे कार्डवरही बदल करता येईल</span>
+      </div>
+
+      <!-- Quick Preset Templates Bar -->
+      <div class="preset-templates-bar">
+        <div class="preset-label">
+          <i class="fa-solid fa-file-invoice"></i> <span>तयार संदेश साचे (1-Click Templates):</span>
+        </div>
+        <div class="preset-btn-group">
+          <button type="button" class="preset-pill active" id="pill_dashkriya" onclick="loadEventPreset('dashkriya')">🕊️ १. दशक्रिया व उत्तरकार्य</button>
+          <button type="button" class="preset-pill" id="pill_shradhanjali" onclick="loadEventPreset('shradhanjali')">🌸 २. भावपूर्ण श्रद्धांजली</button>
+          <button type="button" class="preset-pill" id="pill_punyasmaran" onclick="loadEventPreset('punyasmaran')">🪔 ३. प्रथम पुण्यस्मरण</button>
+          <button type="button" class="preset-pill" id="pill_teravi" onclick="loadEventPreset('teravi')">🕉️ ४. तेरवी व गंधमुक्ती</button>
+        </div>
+      </div>
+
+      <!-- Quick Tools Bar (Numbers & Save Draft) -->
+      <div class="quick-tools-bar">
+        <button type="button" class="btn-tool-pill" onclick="toggleMarathiNumerals()" title="अंकांचे मराठीत किंवा इंग्रजीत रूपांतर करा">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i> <span id="numConvertLabel">मराठी अंक करा (123 ➔ १२३)</span>
+        </button>
+        <button type="button" class="btn-tool-pill" onclick="saveDraftManually()">
+          <i class="fa-solid fa-floppy-disk"></i> सेव्ह ड्राफ्ट
+        </button>
       </div>
 
       <div class="accordion-container">
@@ -102,9 +135,21 @@
             <i class="fa-solid fa-chevron-down arrow"></i>
           </summary>
           <div class="accordion-body">
+            <div class="form-group">
+              <label>कॅलिग्राफी शीर्षक पर्याय (Calligraphy Styles):</label>
+              <select id="in_calligraphy_select" onchange="applyCalligraphyTitle(this.value)">
+                <option value="॥ शोक संदेश ॥" selected>॥ शोक संदेश ॥</option>
+                <option value="॥ भावपूर्ण श्रद्धांजली ॥">॥ भावपूर्ण श्रद्धांजली ॥</option>
+                <option value="॥ वैकुंठगमन ॥">॥ वैकुंठगमन ॥</option>
+                <option value="॥ विनम्र अभिवादन ॥">॥ विनम्र अभिवादन ॥</option>
+                <option value="॥ दुःखद निधन ॥">॥ दुःखद निधन ॥</option>
+                <option value="॥ ओम शांती शांती ॥">॥ ओम शांती शांती ॥</option>
+                <option value="॥ प्रथम पुण्यस्मरण ॥">॥ प्रथम पुण्यस्मरण ॥</option>
+              </select>
+            </div>
             <div class="input-grid-2">
               <div class="form-group">
-                <label>शीर्षक (Main Banner):</label>
+                <label>शीर्षक (Main Banner Text):</label>
                 <input type="text" id="in_banner_title" value="शोक संदेश" oninput="updateCard()">
               </div>
               <div class="form-group">
@@ -216,10 +261,31 @@
                 </div>
               </div>
 
+              <!-- Photo Feather & Garland Variety -->
+              <div class="input-grid-2">
+                <div class="form-group">
+                  <label><i class="fa-solid fa-circle-half-stroke"></i> फोटो कडा (Edge Feather):</label>
+                  <select id="in_photo_feather" onchange="setPhotoFeather(this.value)">
+                    <option value="none" selected>स्पष्ट कडा (Sharp)</option>
+                    <option value="soft">मऊ फेड (Soft Feather)</option>
+                    <option value="vignette">विंटेज व्हिग्नेट (Vignette)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><i class="fa-solid fa-spa"></i> हार प्रकार (Garland Type):</label>
+                  <select id="in_garland_type" onchange="setGarlandType(this.value)">
+                    <option value="marigold" selected>🌼 झेंडूचा केसरी हार</option>
+                    <option value="rose">🌹 गुलाबाचा लाल हार</option>
+                    <option value="jasmine">🌸 मोगरा-शेवंती हार</option>
+                    <option value="tulsi">🌿 तुळशीची माळ</option>
+                  </select>
+                </div>
+              </div>
+
               <!-- Garland Toggle -->
               <div class="checkbox-row">
                 <input type="checkbox" id="in_show_garland" checked onchange="toggleGarland(this.checked)">
-                <label for="in_show_garland">🌸 फुलांचा हार दाखवा (Show Flower Garland)</label>
+                <label for="in_show_garland">🌸 फुलांचा हार दाखवा (Show Garland)</label>
               </div>
 
               <!-- Drag Hint -->
@@ -347,15 +413,17 @@
           </div>
         </details>
 
-        <!-- 6. Font & Typography Settings -->
-        <details class="accordion-item">
+        <!-- 6. Font & All Text Fields Size Customization -->
+        <details class="accordion-item" open>
           <summary class="accordion-header">
-            <span><i class="fa-solid fa-font"></i> फॉन्ट व आकार सेटिंग्ज</span>
+            <span><i class="fa-solid fa-text-height"></i> सर्व मजकुराचा फॉन्ट व आकार कस्टमाइझ करा (Text Sizes)</span>
             <i class="fa-solid fa-chevron-down arrow"></i>
           </summary>
           <div class="accordion-body">
+            
+            <!-- Font Family -->
             <div class="form-group">
-              <label>मराठी फॉन्ट निवडा (Font Family):</label>
+              <label><i class="fa-solid fa-font"></i> मुख्य मराठी फॉन्ट (Font Style):</label>
               <select id="in_font_family" onchange="changeFontFamily(this.value)">
                 <option value="'Noto Serif Devanagari', serif" selected>Noto Serif Devanagari (क्लासिक पारंपारिक)</option>
                 <option value="'Yatra One', cursive">Yatra One (ठळक व आकर्षक)</option>
@@ -364,16 +432,195 @@
                 <option value="'Rozha One', serif">Rozha One (सुंदर हेडलाइन)</option>
               </select>
             </div>
+
+            <!-- Header and Top Row Font Sizes -->
+            <div class="font-size-section-header">
+              <span><i class="fa-solid fa-heading"></i> १. मथळा, तारीख व गाव आकार:</span>
+            </div>
+
             <div class="input-grid-2">
               <div class="form-group">
-                <label>नाव फॉन्ट आकार (Deceased Size):</label>
-                <input type="range" id="in_name_size" min="20" max="38" value="28" oninput="changeNameSize(this.value)">
+                <div class="label-with-value">
+                  <label>मुख्य मथळा आकार (Banner):</label>
+                  <span id="val_size_banner_title">32px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_banner_title', -1)">-</button>
+                  <input type="range" id="in_size_banner_title" min="18" max="48" value="32" oninput="changeBannerTitleSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_banner_title', 1)">+</button>
+                </div>
               </div>
+
               <div class="form-group">
-                <label>मजकूर फॉन्ट आकार (Body Size):</label>
-                <input type="range" id="in_body_size" min="12" max="22" value="16" oninput="changeBodySize(this.value)">
+                <div class="label-with-value">
+                  <label>तारीख आकार (Top Date):</label>
+                  <span id="val_size_top_date">22px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_top_date', -1)">-</button>
+                  <input type="range" id="in_size_top_date" min="14" max="32" value="22" oninput="changeTopDateSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_top_date', 1)">+</button>
+                </div>
               </div>
             </div>
+
+            <div class="input-grid-2">
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>डावे गाव / मंत्र (Village):</label>
+                  <span id="val_size_top_village">28px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_top_village', -1)">-</button>
+                  <input type="range" id="in_size_top_village" min="16" max="36" value="28" oninput="changeTopVillageSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_top_village', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>कार्यस्थळ मजकूर (Venue Box):</label>
+                  <span id="val_size_venue_text">15px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_venue_text', -1)">-</button>
+                  <input type="range" id="in_size_venue_text" min="11" max="24" value="15" oninput="changeVenueTextSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_venue_text', 1)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deceased Name and Intro Lines -->
+            <div class="font-size-section-header">
+              <span><i class="fa-solid fa-user"></i> २. नाव, पत्ता व कळविणारे मजकूर:</span>
+            </div>
+
+            <div class="input-grid-2">
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>दिवंगत नाव (Deceased Name):</label>
+                  <span id="val_size_name">28px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_name_size', -1)">-</button>
+                  <input type="range" id="in_name_size" min="20" max="46" value="28" oninput="changeNameSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_name_size', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>मूळ गाव / पत्ता (Residence):</label>
+                  <span id="val_size_residence">20px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_residence', -1)">-</button>
+                  <input type="range" id="in_size_residence" min="13" max="28" value="20" oninput="changeResidenceSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_residence', 1)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-grid-2">
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>प्रातिनिधिक ओळ (श्री.रा.रा. ...):</label>
+                  <span id="val_size_shrirara">19px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_shrirara', -1)">-</button>
+                  <input type="range" id="in_size_shrirara" min="13" max="26" value="19" oninput="changeShriraraSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_shrirara', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>कळविणारे मजकूर (Sender):</label>
+                  <span id="val_size_sender_line">16px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_sender_line', -1)">-</button>
+                  <input type="range" id="in_size_sender_line" min="12" max="24" value="16" oninput="changeSenderLineSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_sender_line', 1)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rituals Announcement Paragraph -->
+            <div class="font-size-section-header">
+              <span><i class="fa-solid fa-calendar-days"></i> ३. विधी व शोकाकुल परिवार:</span>
+            </div>
+
+            <div class="form-group">
+              <div class="label-with-value">
+                <label>निधन व विधी तपशील (Announcement):</label>
+                <span id="val_size_body">16px</span>
+              </div>
+              <div class="range-with-btns">
+                <button type="button" class="step-btn" onclick="stepFontSize('in_body_size', -1)">-</button>
+                <input type="range" id="in_body_size" min="12" max="24" value="16" oninput="changeBodySize(this.value)">
+                <button type="button" class="step-btn" onclick="stepFontSize('in_body_size', 1)">+</button>
+              </div>
+            </div>
+
+            <div class="input-grid-2">
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>शोकाकुल मथळा (Header):</label>
+                  <span id="val_size_shokakul_title">17px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_shokakul_title', -1)">-</button>
+                  <input type="range" id="in_size_shokakul_title" min="12" max="26" value="17" oninput="changeShokakulTitleSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_shokakul_title', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>शोकाकुल यादी नावे (Names):</label>
+                  <span id="val_size_shokakul_names">15px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_shokakul_names', -1)">-</button>
+                  <input type="range" id="in_size_shokakul_names" min="11" max="22" value="15" oninput="changeShokakulNamesSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_shokakul_names', 1)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-grid-2">
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>समस्त परिवार तळटीप (Footer):</label>
+                  <span id="val_size_family_footer">17px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_family_footer', -1)">-</button>
+                  <input type="range" id="in_size_family_footer" min="12" max="26" value="17" oninput="changeFamilyFooterSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_family_footer', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="label-with-value">
+                  <label>स्टुडिओ वॉटरमार्क (Studio):</label>
+                  <span id="val_size_studio">11.5px</span>
+                </div>
+                <div class="range-with-btns">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_studio', -1)">-</button>
+                  <input type="range" id="in_size_studio" min="9" max="18" value="11.5" step="0.5" oninput="changeStudioBrandingSize(this.value)">
+                  <button type="button" class="step-btn" onclick="stepFontSize('in_size_studio', 1)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reset All Font Sizes Button -->
+            <button type="button" class="btn-reset-fonts" onclick="resetAllFontSizes()">
+              <i class="fa-solid fa-rotate-left"></i> सर्व फॉन्ट आकार पूर्ववत करा (Reset Default Sizes)
+            </button>
+
           </div>
         </details>
 
@@ -466,6 +713,24 @@
               <input type="checkbox" id="in_card_3d_shadow" checked onchange="toggleCard3DShadow(this.checked)">
               <label for="in_card_3d_shadow">🌟 ३D कार्ड डेप्थ व वास्तववादी शेड (Realistic 3D Depth)</label>
             </div>
+            <div class="checkbox-row">
+              <input type="checkbox" id="in_show_branding" onchange="toggleStudioBranding(this.checked)">
+              <label for="in_show_branding">🏷️ स्टुडिओ / प्रिंटर क्रेडिट वॉटरमार्क (Studio Branding)</label>
+            </div>
+            <div class="form-group" id="group_studio_text" style="display:none; margin-top: 4px;">
+              <input type="text" id="in_studio_text" value="सौजन्य: अमर ग्राफिक्स, चोपडा" oninput="updateStudioBrandingText(this.value)">
+            </div>
+            <div class="checkbox-row" style="margin-top: 10px;">
+              <input type="checkbox" id="chk_hide_cut_markers" onchange="toggleCutMarkers(this.checked)">
+              <label for="chk_hide_cut_markers">✂️ कार्ड गॅपमधील लहान कात्री आयकॉन लपवा</label>
+            </div>
+            <div class="checkbox-row">
+              <input type="checkbox" id="chk_hide_cut_lines" onchange="toggleCutLines(this.checked)">
+              <label for="chk_hide_cut_lines">📏 कटिंग रेषा (Dashed Lines) पूर्णपणे लपवा</label>
+            </div>
+            <p class="field-hint" style="margin-top: 6px; color: #15803d; font-size: 11px;">
+              <i class="fa-solid fa-circle-check"></i> टीप: कार्ड गॅपमध्ये कोणताही मजकूर ('कापा' किंवा 'Cut') नाही, फक्त बारीक कटिंग लाईनवर लहान कात्री आयकॉन राहतील.
+            </p>
           </div>
         </details>
 
@@ -491,8 +756,30 @@
       <div class="preview-viewport" id="previewViewport">
         <div class="card-scaler" id="cardScaler">
 
-          <!-- ==================== THE INVITATION / CONDOLENCE CARD ==================== -->
-          <div class="shok-card theme-royal-gold border-royal-filigree size-landscape realistic-depth" id="shokCard">
+          <!-- ==================== A4 SHEET CONTAINER (Single Card or 4-in-1 Sheet) ==================== -->
+          <div class="a4-sheet-wrapper" id="a4SheetWrapper">
+            
+            <!-- A4 Sheet Header Guide (Shown in 4-up mode) -->
+            <div class="a4-sheet-guide-bar" id="a4SheetGuideBar">
+              <div class="guide-bar-left">
+                <span><i class="fa-solid fa-print"></i> <strong>A4 शीट: ४ प्रती</strong> (2 × 2 Grid)</span>
+                <span class="guide-tag-noprint"><i class="fa-solid fa-scissors"></i> गॅपमध्ये फक्त लहान कात्री आयकॉन (कोणताही मजकूर नाही)</span>
+              </div>
+              <div class="guide-bar-actions">
+                <button type="button" class="btn-guide-toggle" id="btnToggleCutMarkers" onclick="toggleCutMarkers()" title="कात्री आयकॉन ऑन-स्क्रीन दाखवा किंवा लपवा">
+                  <i class="fa-solid fa-scissors"></i> कात्री आयकॉन लपवा
+                </button>
+                <button type="button" class="btn-guide-toggle" id="btnToggleCutLines" onclick="toggleCutLines()" title="कटिंग रेषा ऑन-स्क्रीन दाखवा किंवा लपवा">
+                  <i class="fa-solid fa-border-none"></i> कटिंग रेषा लपवा
+                </button>
+              </div>
+            </div>
+
+            <div class="a4-sheet-grid" id="a4SheetGrid">
+
+              <!-- Slot 1: Master Editable Card (Top Left) -->
+              <div class="sheet-slot slot-master">
+                <div class="shok-card theme-royal-gold border-royal-filigree size-landscape realistic-depth" id="shokCard">
 
             <!-- Realistic Paper Texture Overlay -->
             <div class="card-texture-overlay texture-subtle" id="cardTextureOverlay"></div>
@@ -643,7 +930,7 @@
 
                   <!-- 4. Death announcement & rituals text -->
                   <div class="announcement-paragraph" id="card_announcement_box">
-                    आज <span class="highlight-date" id="card_death_date">दि.०२/०९/२०२६</span> वार <span class="highlight-word" id="card_death_day">बुधवार</span> रोजी <span id="card_death_time">सायंकाळी ६ : ३० वाजता</span> <span id="card_deceased_age">वयाच्या ८६ व्या वर्षी</span> दुःखद निधन झाले तरी त्यांच्या <span class="highlight-ritual-title">दशक्रिया विधी:</span> <span class="highlight-date" id="card_dashkriya_info">दि. ११/०९/२०२६ वार शुक्रवार रोजी</span> व <span class="highlight-ritual-title">गंध मुक्ती उत्तर कार्याची नेम:</span> <span class="highlight-date" id="card_uttarkarya_info">दि. १२/०९/२०२६ वार शनिवार रोजी सकाळी ११ वाजता</span> <span id="card_rituals_place">माळी समाज मंगल कार्यालय येथे करण्याचे योजिले आहे.</span>
+                    आज <span class="highlight-date" contenteditable="true" id="card_death_date">दि.०२/०९/२०२६</span> वार <span class="highlight-word" contenteditable="true" id="card_death_day">बुधवार</span> रोजी <span contenteditable="true" id="card_death_time">सायंकाळी ६ : ३० वाजता</span> <span contenteditable="true" id="card_deceased_age">वयाच्या ८६ व्या वर्षी</span> दुःखद निधन झाले तरी त्यांच्या <span class="highlight-ritual-title">दशक्रिया विधी:</span> <span class="highlight-date" contenteditable="true" id="card_dashkriya_info">दि. ११/०९/२०२६ वार शुक्रवार रोजी</span> व <span class="highlight-ritual-title">गंध मुक्ती उत्तर कार्याची नेम:</span> <span class="highlight-date" contenteditable="true" id="card_uttarkarya_info">दि. १२/०९/२०२६ वार शनिवार रोजी सकाळी ११ वाजता</span> <span contenteditable="true" id="card_rituals_place">माळी समाज मंगल कार्यालय येथे करण्याचे योजिले आहे.</span>
                   </div>
 
                   <!-- 5. Shokakul Section (Bottom right box) -->
@@ -680,8 +967,52 @@
               </div>
 
             </div>
+
+            <!-- Studio Branding / Printer Watermark Credit -->
+            <div class="card-studio-branding hidden" id="cardStudioBranding">
+              <span contenteditable="true" id="card_studio_text">सौजन्य: अमर ग्राफिक्स, चोपडा</span>
+            </div>
+            </div>
+            <!-- ==================== END OF CARD 1 (MASTER) ==================== -->
           </div>
-          <!-- ==================== END OF CARD ==================== -->
+
+          <!-- Slot 2: Clone Card 1 (Top Right) -->
+          <div class="sheet-slot slot-clone">
+            <div class="shok-card theme-royal-gold border-royal-filigree size-landscape realistic-depth" id="cloneCard1"></div>
+          </div>
+
+          <!-- Slot 3: Clone Card 2 (Bottom Left) -->
+          <div class="sheet-slot slot-clone">
+            <div class="shok-card theme-royal-gold border-royal-filigree size-landscape realistic-depth" id="cloneCard2"></div>
+          </div>
+
+          <!-- Slot 4: Clone Card 3 (Bottom Right) -->
+          <div class="sheet-slot slot-clone">
+            <div class="shok-card theme-royal-gold border-royal-filigree size-landscape realistic-depth" id="cloneCard3"></div>
+          </div>
+
+          <!-- Vertical Center Cut Line & Guide (फक्त लहान कात्री आयकॉन - कोणताही मजकूर नाही) -->
+          <div class="cut-guide cut-guide-vertical" id="cutGuideVertical">
+            <div class="cut-marker marker-top" title="कात्रीने कापा"><i class="fa-solid fa-scissors"></i></div>
+            <div class="cut-marker marker-mid1" title="कात्रीने कापा"><i class="fa-solid fa-scissors"></i></div>
+            <div class="cut-marker marker-center" title="कात्रीने कापा"><i class="fa-solid fa-scissors"></i></div>
+            <div class="cut-marker marker-mid2" title="कात्रीने कापा"><i class="fa-solid fa-scissors"></i></div>
+            <div class="cut-marker marker-bottom" title="कात्रीने कापा"><i class="fa-solid fa-scissors"></i></div>
+          </div>
+
+          <!-- Horizontal Center Cut Line & Guide (फक्त लहान कात्री आयकॉन - कोणताही मजकूर नाही) -->
+          <div class="cut-guide cut-guide-horizontal" id="cutGuideHorizontal">
+            <div class="cut-marker marker-left" title="कात्रीने कापा"><i class="fa-solid fa-scissors fa-rotate-90"></i></div>
+            <div class="cut-marker marker-mid1" title="कात्रीने कापा"><i class="fa-solid fa-scissors fa-rotate-90"></i></div>
+            <div class="cut-marker marker-center" title="कात्रीने कापा"><i class="fa-solid fa-scissors fa-rotate-90"></i></div>
+            <div class="cut-marker marker-mid2" title="कात्रीने कापा"><i class="fa-solid fa-scissors fa-rotate-90"></i></div>
+            <div class="cut-marker marker-right" title="कात्रीने कापा"><i class="fa-solid fa-scissors fa-rotate-270"></i></div>
+          </div>
+
+        </div>
+        <!-- ==================== END OF A4 GRID ==================== -->
+      </div>
+      <!-- ==================== END OF A4 SHEET WRAPPER ==================== -->
 
         </div>
       </div>
